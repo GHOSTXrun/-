@@ -58,7 +58,7 @@ $('#risk-form').addEventListener('submit',event=>{
  event.preventDefault();if(!event.currentTarget.reportValidity())return;
  try{const data=new FormData(event.currentTarget),input={};for(const key of Object.keys(state.config)){if(data.has(key))input[key]=Number(data.get(key));}state=createSession(input);auto=false;filter=null;pollMs=Number($('#poll-setting').value);save();render();$('#settings').close();toast('New paper ledger created. No real funds are connected.');}catch(error){$('#settings-message').textContent=error.message;}
 });
-document.querySelector('.nd-controls').insertAdjacentHTML('beforeend','<button data-action="csv">EXPORT TRADES / CSV ↗</button>');
+document.querySelector('.nd-controls').insertAdjacentHTML('beforeend','<button data-action="csv">EXPORT LEDGER / CSV ↗</button>');
 for(const dialog of document.querySelectorAll('dialog'))dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close();});
 render();refresh();setInterval(()=>{if(Date.now()-lastAttempt>=pollMs&&!network.loading)refresh();},1000);
 setInterval(()=>{if(network.online&&Date.now()-market.receivedAt>45000){network.online=false;network.error='Market observation is stale. Waiting for a fresh response.';}render();},1000);

@@ -18,7 +18,7 @@ const panelRoles=(await import(pathToFileURL(join(root,'terminal-engine.mjs')).h
 let staticPanel=runInNewContext(helperSource+'\n('+sourceBridge.slice(expressionStart,expressionEnd)+')',{roles:panelRoles});
 const staticAgents=runInNewContext(helperSource+'\nroles.map(([name,role])=>\'<button class="nd-agent" data-nd-agent="\'+name+\'"><span class="nd-agent-icon">\'+icon(name)+\'</span><span class="nd-agent-content"><span class="nd-agent-name"><b>\'+name.toUpperCase()+\'</b><em>READY</em></span><small>\'+role+\'</small><p>paper execution role</p><code>Waiting for session state.</code></span></button>\').join(\'\')',{roles:panelRoles});
 staticPanel=staticPanel.replace('<div data-nd-agents></div>',()=>'<div data-nd-agents>'+staticAgents+'</div>');
-staticPanel=staticPanel.replace('</div></aside>',()=>'<div class="nd-playback"><span>simulation speed</span><select id="nd-speed" aria-label="Simulation speed"><option value="1">1× / 3s</option><option value="2">2× / 1.5s</option><option value="4">4× / 0.75s</option></select></div></div></aside>');
+staticPanel=staticPanel.replace('</div></aside>',()=>'<div class="nd-playback"><span>terminal cadence</span><select id="nd-speed" aria-label="Terminal cadence"><option value="1">1× / 3s</option><option value="2">2× / 1.5s</option><option value="4" selected>4× / 0.75s</option></select></div></div></aside>');
 const styleMatch=html.match(/<template id="video-panel-template"><style>([\s\S]*?)<\/style><\/template>/);
 if(!styleMatch)throw Error('Native panel styles missing');
 html=html.replace('<div id="video-panel-host"></div>',()=>'<div id="video-panel-host"><template shadowrootmode="open"><style>'+styleMatch[1]+'</style><section class="night-desk" id="desk">'+staticPanel+'</section></template></div>');
