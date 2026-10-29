@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {createSession,step,fixture,settings,validateCandidate} from './terminal-engine.mjs';
+import {createSession,step,fixture,settings,validateCandidate,advance} from './terminal-engine.mjs';
 assert.throws(()=>settings({slippage:1.6}));
 assert.throws(()=>settings({allocation:NaN}));
 let s=createSession(),bad={...fixture(0),sellable:false};
@@ -15,3 +15,6 @@ loss=step(loss,{...fixture(0),exit:.5});assert.equal(loss.halted,true);assert.de
 let replay=createSession();for(let i=0;i<100;i++)replay=step(replay);
 assert.equal(Math.round((33.4+replay.trades.reduce((n,t)=>n+t.pnl,0))*100),Math.round(replay.balance*100));
 console.log('PASS: guard veto, quote age, slippage cap, sizing, net accounting, loss halt and replay reconciliation');
+let visible=advance(createSession());assert(visible.position);assert.equal(visible.balance,33.4);assert.equal(visible.trades.length,0);assert(visible.logs.some(l=>l.decision==='OPEN'));
+visible=advance(visible);assert(!visible.position);assert.equal(visible.trades.length,1);assert.equal(Math.round(visible.balance*100),Math.round((33.4+visible.trades[0].pnl)*100));assert(visible.logs.some(l=>l.decision==='OPEN'));assert(visible.logs.some(l=>l.decision==='CLOSED'));
+console.log('PASS: visible entry, deferred settlement, exit and retained order history');

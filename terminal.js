@@ -1,4 +1,4 @@
-import {createSession,settings,step,roles} from './terminal-engine.mjs';
+import {createSession,settings,step,advance,roles} from './terminal-engine.mjs';
 import {mountDesk,renderDesk} from './desk.js';
 mountDesk();
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
@@ -37,12 +37,12 @@ function render(){
  const notice=$('#sessionMessage');if(!storageOK)notice.textContent='Browser storage unavailable. Export for a durable copy.';
  renderDesk(session,running);
 }
-function tick(){if(!running)return;try{session=step(session);if(session.halted)running=false;save();render();}catch(error){running=false;render();toast('Paper replay paused: '+error.message);}}
+function tick(){if(!running)return;try{session=advance(session);if(session.halted)running=false;save();render();}catch(error){running=false;render();toast('Paper replay paused: '+error.message);}}
 function download(name,body,type){const url=URL.createObjectURL(new Blob([body],{type}));const a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 document.addEventListener('click',event=>{
  const trace=event.target.closest('[data-trace]');if(trace){filterTrace=trace.dataset.trace;$('#agentFilter').value='all';location.hash='lineage';render();return;}
  const action=event.target.closest('[data-action]')?.dataset.action;
- if(action==='toggle'){if(session.halted){location.hash='spawn';return;}running=!running;if(running)tick();else{save();render();}}
+ if(action==='toggle'){if(session.halted){location.hash='spawn';return;}running=!running;lastReplayTick=performance.now();if(running)tick();else{save();render();}}
  if(action==='export')download('nightjar-paper-session.json',JSON.stringify({...session,exportedAt:new Date().toISOString(),mode:'PAPER / SYNTHETIC'},null,2),'application/json');
  if(action==='csv'){const headers=['trace','at','symbol','size','pnl','balance','fees','slippage','mode','reason'];const quote=v=>'"'+String(v??'').replaceAll('"','""')+'"';download('nightjar-paper-trades.csv',[headers.join(','),...session.trades.map(t=>headers.map(k=>quote(t[k])).join(','))].join('\r\n'),'text/csv;charset=utf-8');}
 });
@@ -52,5 +52,7 @@ addEventListener('hashchange',route);
 document.addEventListener('keydown',e=>{if(e.ctrlKey||e.metaKey||e.altKey||/INPUT|SELECT|TEXTAREA|BUTTON/.test(e.target.tagName))return;const routes=['live','mutations','lineage','treasury','spawn','manual','desk'];if(/^[0-6]$/.test(e.key))location.hash=routes[Number(e.key)];});
 function clock(){const value=new Date().toLocaleTimeString('en-GB',{hour12:false});$('#clock').textContent=value+' LOCAL';const deskClock=$('[data-nd-clock]');if(deskClock)deskClock.textContent=value;}
 for(const [k,v] of Object.entries(session.config)){const input=$('#sessionForm [name="'+k+'"]');if(input)input.value=v;}
-route();render();clock();setInterval(clock,1000);setInterval(tick,3000);
+let replaySpeed=1,lastReplayTick=0;
+document.addEventListener('change',event=>{if(event.target.id==='nd-speed')replaySpeed=Number(event.target.value);});
+route();render();clock();if(new URLSearchParams(location.search).get("autoplay")==="1"&&!session.halted){running=true;lastReplayTick=performance.now();tick();}setInterval(clock,1000);setInterval(()=>{if(performance.now()-lastReplayTick>=3000/replaySpeed){lastReplayTick=performance.now();tick();}},150);
 

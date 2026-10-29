@@ -51,3 +51,25 @@ export function step(session,quote=fixture(session.cursor),at=new Date().toISOSt
   if(s.balance<=s.config.initial*(1-s.config.lossLimit/100)){s.halted=true;log('Guard','HALTED','Session loss limit reached; start a new session to resume.');}
   return s;
 }
+// A visible paper order stays open for one replay tick, then reconciles on the next.
+export function advance(session,at=new Date().toISOString()){
+  if(session.halted)return session;
+  if(session.position&&session.pendingClose){
+    const result=structuredClone(session.pendingClose),trace=session.position.trace;
+    result.trades[0].at=at;
+    for(const log of result.logs)if(log.trace===trace&&['CLOSED','SETTLED','HALTED'].includes(log.decision))log.at=at;
+    const open=session.logs.find(log=>log.trace===trace&&log.decision==='OPEN');
+    const index=result.logs.findIndex(log=>log.trace===trace&&log.agent==='Sizer');
+    if(open)result.logs.splice(index,0,open);
+    return result;
+  }
+  const completed=step(session,fixture(session.cursor),at);
+  if(completed.trades.length===session.trades.length)return completed;
+  const trade=completed.trades[0],interim=structuredClone(session);
+  interim.cursor=completed.cursor;
+  interim.position={...trade,at,status:'OPEN'};
+  interim.pendingClose=completed;
+  interim.logs=completed.logs.filter(log=>log.trace!==trade.trace||['Scout','Guard','Sizer'].includes(log.agent));
+  interim.logs.unshift({trace:trade.trace,at,agent:'Trigger',decision:'OPEN',reason:'Paper entry '+trade.symbol+' · '+trade.size.toFixed(2)+' USD · quote within slippage cap',mode:'PAPER / SYNTHETIC'});
+  return interim;
+}
