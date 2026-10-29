@@ -71,3 +71,5 @@
 @media(max-width:1050px){.integrated-stage{min-height:460px}.template-screen-content{min-height:460px}.template-details{grid-template-columns:1fr}.template-detail .form-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:680px){.template-screen-content{padding:10px}.template-screen-content .candidates{gap:4px}.template-screen-content .candidate{padding:7px 4px}.template-screen-content .candidate>b{font-size:7px}.template-screen-content .execution-bottom{gap:12px}.template-detail .form-bottom{align-items:flex-start;flex-direction:column}.template-detail .form-bottom button{width:100%;padding:10px}.template-log-list{height:230px}}
 
+
+.project-socials{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:16px}.project-socials a,.project-socials button,.project-socials>span{display:inline-flex;align-items:center;min-height:34px;padding:8px 12px;border:1px solid #253b2a;background:transparent;color:#a7b5aa;font:11px monospace;text-decoration:none}.project-socials a:hover{border-color:#00ed45;color:#00ed45}.project-socials button[aria-disabled]{cursor:default}.project-socials>span b{color:#00ed45;margin-left:6px}
