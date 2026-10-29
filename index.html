@@ -1,25 +1,394 @@
-<!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="google" content="notranslate"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#000000"><link rel="icon" type="image/svg+xml" href="./assets/favicon.svg?v=nightjar-2"><link rel="shortcut icon" href="./assets/favicon.svg?v=nightjar-2"><title>Nightjar — Autonomous Trading Terminal</title><meta name="description" content="Six specialized agents. One inspectable trading terminal. Discover, filter, size, execute and review every decision in paper mode."><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter+Tight:wght@500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="./styles.css?v=agents33"><link rel="stylesheet" href="./integration.css"></head>
-<body><div class="noise" aria-hidden="true"></div>
-<header class="topbar"><a class="brand" href="#top" aria-label="Nightjar home"><span class="brand-logo"><img src="./assets/cellumo-logo.png" alt=""></span><span>nightjar</span></a><nav><a class="active" href="#top"><b>00</b> terminal</a><a href="#agents"><b>01</b> agents</a><a href="#decisions"><b>02</b> decisions</a><a href="#ledger"><b>03</b> ledger</a><a href="#risk"><b>04</b> session</a><a href="#manual"><b>05</b> manual</a></nav><div class="header-actions"><span class="ca">PAPER / 模拟</span><a href="#risk">风控设置</a><button type="button" data-action="toggle">启动模拟</button></div></header>
-<main id="top" class="cell-live app-view is-active" data-view="live">
-  <section class="cell-intro cell-pane">
-    <div class="cell-command"><span>~/nightjar</span><i>›</i><b>nightjar session --paper</b></div>
-    <div class="cell-intro-body">
-      <div class="cell-wordmark" translate="no"><span>n</span><span>i</span><span>g</span><span>h</span><span>t</span><span>j</span><span>a</span><span>r</span></div>
-      <h1><i>›</i> six agents. one trading terminal.<br>review every decision, from signal to settlement.</h1>
-      <p>Scout finds the signal. Guard checks the risk. Sizer sets exposure. Trigger handles execution. Scribe explains the decision. Ledger reconciles the result.</p>
-      <div class="cell-inline-stats"><span><b>6</b> specialized agents</span><i>·</i><span><b data-stat="trades">0</b> closed trades</span><i>·</i><span><b data-stat="filtered">0</b> filtered</span><i>·</i><span><b data-record>0 盈 / 0 亏</b></span></div>
-      <div class="cell-ca"><span>PAPER EQUITY</span><code data-stat="balance">$33.40</code><button data-action="json">export log</button></div>
-      <section class="cell-proof-banner"><div class="proof-code"><header><i></i><span>DECISION TRACE</span></header><code data-trace-label>等待第一条信号</code><small><b>SYNTHETIC QUOTES</b><em>NO LIVE ORDERS</em></small></div><div class="proof-statement"><span>STOP ASKING WHAT IT WOULD BUY.</span><strong>INSPECT WHY IT ACTED.</strong></div><div class="proof-gate"><b>01</b><span>DISCOVER</span></div><div class="proof-gate"><b>02</b><span>RISK GATE</span></div><div class="proof-output"><strong>NIGHTJAR</strong><span>AUDIT TRAIL</span></div></section>
-      <div class="cell-action-zone"><div class="cell-actions"><button class="cell-primary" data-action="toggle">START PAPER SESSION</button><a href="#decisions">REVIEW DECISIONS</a></div><a class="cell-manual-link" href="#manual">MANUAL / HOW IT WORKS</a></div></div></section>
-  <section class="cell-screen cell-pane">
-    <header><span><i></i><b>‹</b>&nbsp; 1/1 &nbsp;<b>›</b>&nbsp; session</span><em>PAPER EXECUTION</em></header>
-<div class="screen-stage video-panel-stage" id="execution"><div class="video-panel-toolbar"><span>VIDEO DESK / 同一模拟会话</span><button type="button" id="expand-video-panel">放大面板 ↗</button></div><div class="video-panel-viewport"><iframe id="video-panel-frame" title="Nightjar 视频交易面板" src="./video-panel.html" sandbox="allow-scripts"></iframe></div></div>
-    <footer><span>machine</span><i>›</i><b>execution adapter offline</b><em>frame —</em></footer>
-  </section>
-<section class="cell-process cell-pane" id="agents"><div class="process-meta"><pre>SCOUT → GUARD → SIZER
-TRIGGER → SCRIBE → LEDGER
-MODE: PAPER / LOCAL
-EXECUTION ADAPTER: OFFLINE</pre><p><span><b>Equity:</b> <strong data-stat="balance">$33.40</strong></span><span><b>Realized P&amp;L:</b> <strong data-stat="pnl">$0.00</strong></span><span><b>Session:</b> <strong data-status>已暂停</strong></span><span data-progress>等待候选</span><span><b>Data:</b> deterministic synthetic quotes</span></p></div><div class="process-table" data-agents></div></section><section class="cell-feed cell-pane" id="decisions"><div class="feed-line"><span class="ascii">NIGHT SHIFT</span><b>nightjar</b><span>PAPER</span><strong data-status>已暂停</strong><span data-log-count>0 条记录</span><em>每条决策都有依据</em></div><div class="template-log-controls"><label>代理 <select id="agent-filter"><option value="all">全部代理</option></select></label><button data-action="clear-filter">清除筛选</button><button data-action="json">导出 JSON</button><label>速度 <select id="speed"><option value="1">1×</option><option value="2">2×</option><option value="4">4×</option></select></label></div><div class="trace-filter" data-trace-filter hidden></div><div class="template-log-list" data-logs role="log" aria-label="决策日志"></div></section><footer class="cell-status"><span><b>nightjar</b> / operator terminal</span><em><i></i> <span data-saving>自动保存</span> &nbsp; <time id="clock"></time></em></footer></main><div class="template-details"><section class="template-detail template-extra"><details><summary>执行数据明细 / 展开查看</summary><div class="integrated-stage" id="execution-data"><div class="screen-grid"></div><div class="template-screen-content"><div class="pipeline" data-pipeline></div><div class="section-line"><span>候选队列</span><span>合成行情 / 下一轮安全检查</span></div><div class="candidates" data-candidates></div><div class="execution-bottom"><article class="position"><div class="section-line"><span>当前交易</span><b class="badge" data-position-status>FLAT</b></div><div data-position></div></article><article class="policy"><div class="section-line"><span>风控策略</span><a href="#risk">编辑 ↗</a></div><dl><dt>单笔仓位</dt><dd data-policy="allocation">10%</dd><dt>滑点上限</dt><dd data-policy="slippage">1.5%</dd><dt>亏损停机</dt><dd data-policy="lossLimit">10%</dd><dt>手续费</dt><dd>双边各 0.1%</dd><dt>可用资金</dt><dd data-stat="cash">$33.40</dd></dl><p data-open>当前无持仓</p></article></div><div class="template-chart"><div class="section-line"><span>资金曲线 <b data-stat="balance">$33.40</b></span><span data-return>变化 0.00%</span></div><svg viewBox="0 0 800 170" data-chart role="img" aria-label="模拟资金曲线"></svg><div class="section-line"><span>初始 <b data-stat="initial">$33.40</b></span><span data-chart-note>平仓后结算</span></div></div></div></div>
-</details></section><section id="ledger" class="template-detail"><header class="subhead"><h2><b>05</b> 交易账本</h2><button data-action="csv">导出 CSV ↗</button></header><div class="table-wrap"><table><thead><tr><th>时间 / 追踪号</th><th>交易对</th><th>仓位</th><th>净盈亏</th><th>结算权益</th><th></th></tr></thead><tbody data-trades></tbody></table></div><footer class="template-note">拒绝的候选不计入交易；点击追踪号可在本页查看决策。</footer></section><section id="risk" class="template-detail"><header class="subhead"><h2><b>06</b> 会话与风控</h2><span>新参数应用于新会话</span></header><form id="session-form"><div class="form-grid"><label>初始模拟资金 / USD<input name="initial" type="number" min="1" max="1000000" step="0.01" value="33.4" required></label><label>单笔分配 / %<input name="allocation" type="number" min="1" max="25" step="1" value="10" required></label><label>每侧滑点上限 / %<input name="slippage" type="number" min="0.1" max="1.5" step="0.1" value="1.5" required></label><label>亏损停机 / %<input name="lossLimit" type="number" min="1" max="25" step="1" value="10" required></label></div><div class="form-bottom"><label class="check"><input type="checkbox" required>确认新建会话。现有记录请先导出保存。</label><button class="primary" type="submit">新建模拟会话</button></div><p id="form-message" role="status"></p></form></section><section id="manual" class="template-detail"><header class="subhead"><h2><b>07</b> 运行手册</h2><span>所有功能都在本页</span></header><div class="manual-content"><p>启动模拟 → 查看候选和安全判断 → 观察 OPEN / CLOSED → 平仓后核对账本与资金曲线。可随时暂停、筛选和导出。</p><details><summary>六代理如何协作</summary><p>Scout 发现候选；Guard 执行安全否决；Sizer 按当前权益分配仓位；Trigger 模拟开平仓；Scribe 记录原因；Ledger 核对余额。六个角色是确定性模拟阶段，未接入 LLM。</p></details><details><summary>数据、费用与保存</summary><p>使用确定性合成行情。每侧按配置计入不利滑点和 0.1% 费用。账本只统计已平仓记录；可用资金扣除模拟持仓成本。刷新后恢复为暂停，可继续结算未平仓的模拟持仓。关闭浏览器停止运行，本地存储可能被清理，请定期导出。</p></details><details><summary>隔夜故事与实盘接入</summary><p>原始想法中的 $33.40 → $13,456.22、71 笔交易、47 盈 24 亏和过滤 23 个币种，仅为未验证概念场景，不计入当前账本。当前未连接真实行情、代币安全服务、钱包签名、交易所或 DEX；持续实盘运行需要独立后台、签名隔离和交易确认核对。</p></details></div></section></div><div class="toast" role="status" aria-live="polite" hidden></div><script type="module" src="./unified.js"></script></body></html>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="google" content="notranslate"><meta name="theme-color" content="#090e17"><title>Nightjar Native Terminal</title><meta name="description" content="Native Nightjar trading desk. Live DEX market observations, rule-based agent stages and a separate paper execution ledger."><style>html,body{margin:0;background:#05070b}*{box-sizing:border-box}:root{--mono:Consolas,monospace;--sans:Arial,sans-serif}button,a,input,select{font:inherit}button{cursor:pointer}a{color:inherit}/* Video-inspired night desk, expressed in the original Nightjar terminal palette. */
+.night-desk{--nd-line:#203025;--nd-muted:#738579;--nd-green:#22f04b;background:#020503;max-width:1480px;margin:24px auto;border:1px solid #294132;color:#e8f1eb;font:11px/1.5 var(--mono)}
+.nd-topline{display:flex;justify-content:space-between;gap:15px;align-items:center;min-height:34px;padding:8px 18px;border-bottom:1px solid var(--nd-line);color:var(--nd-muted);font-size:9px}
+.nd-topline>span:first-child{color:#b5c9bb;letter-spacing:.08em}.nd-topline>b{font-size:8px;color:var(--nd-green);border:1px solid #31573b;padding:2px 6px;font-weight:400}
+.nd-heading{padding:28px 26px;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(280px,.8fr);gap:30px;border-bottom:1px solid var(--nd-line)}
+.nd-identity{display:flex;gap:20px;align-items:center}.nd-owl{flex:0 0 92px;width:92px;height:92px;background:radial-gradient(ellipse,rgba(34,240,75,.09),transparent 70%)}
+.nd-owl svg{width:100%;height:100%;fill:#07120b;stroke:var(--nd-green);stroke-width:1.4}.nd-owl .nd-pupil{fill:var(--nd-green);stroke:none}
+.nd-title{display:flex;align-items:center;gap:14px;flex-wrap:wrap}.nd-title h1{font:600 clamp(22px,2.5vw,36px)/1.1 var(--sans);letter-spacing:-.04em;margin:0}
+.nd-title>span{font-size:8px;border:1px solid #31573b;color:var(--nd-green);padding:3px 6px}
+.nd-running{display:flex;align-items:center;gap:9px;margin:10px 0;color:var(--nd-green);font-size:10px}.nd-running i,.nd-footer i{display:inline-block;width:5px;height:5px;background:var(--nd-green)}.nd-running time{margin-left:5px;color:var(--nd-muted)}
+.nd-latest{display:inline-block;max-width:100%;border:1px solid #31573b;padding:3px 7px;font-size:8px;color:#a6c9b0}.nd-identity small{display:block;color:var(--nd-muted);margin-top:7px;font-size:9px}
+.nd-metrics{display:grid;grid-template-columns:1fr 1fr;gap:14px 30px}.nd-metrics>div{display:flex;flex-direction:column}.nd-metrics strong{font-size:clamp(21px,2.2vw,34px);line-height:1.1;font-weight:500;letter-spacing:-.05em}.nd-metrics span{margin-top:7px;color:var(--nd-muted);font-size:8px;letter-spacing:.12em}
+.nd-metrics [data-nd=wins]{color:var(--nd-green)}.nd-metrics [data-nd=losses]{color:#ec9292}
+.nd-layout{display:grid;grid-template-columns:280px minmax(0,1fr);gap:16px;padding:18px}.nd-sidebar,.nd-workspace{min-width:0}.nd-workspace{display:flex;flex-direction:column;gap:12px}.nd-label{display:flex;justify-content:space-between;align-items:center;gap:10px;color:#adbbb1;font-size:9px;letter-spacing:.075em;min-height:24px}.nd-label>span:last-child{color:#627c6b;font-size:8px;text-align:right;letter-spacing:0}
+.nd-sidebar>.nd-label{padding:0 4px 10px}
+.nd-agent{display:flex;width:100%;gap:10px;background:#050b07;border:1px solid var(--nd-line);padding:14px 12px;color:inherit;text-align:left;font-family:inherit;margin:0 0 9px;cursor:pointer}
+.nd-agent:hover,.nd-agent:focus-visible{border-color:var(--nd-green);background:#09160d;outline:none}.nd-agent.nd-recent{border-left:2px solid #438b55}
+.nd-agent-icon{display:flex;align-items:center;justify-content:center;flex:0 0 30px;width:30px;height:30px;border:1px solid #2a4132;background:#0c1b11;color:var(--nd-green)}
+.nd-agent-icon svg,.nd-stages svg,.nd-operator>svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.nd-agent-content{min-width:0;flex:1}.nd-agent-name{display:flex;justify-content:space-between;align-items:center;gap:8px}.nd-agent-name b{font:600 13px var(--sans)}.nd-agent-name em{font:7px var(--mono);color:#a8cbb2;border:1px solid #304b37;padding:2px 4px}
+.nd-agent-content>small{display:block;color:#637a6b;font-size:7px;margin-top:3px;letter-spacing:.07em}.nd-agent-content p{font-size:9px;line-height:1.7;margin:9px 0;color:#a6b6ac}
+.nd-agent-content code{display:block;color:#698a74;font:8px/1.7 var(--mono);overflow-wrap:anywhere}
+.nd-operator{display:flex;gap:12px;padding:16px 12px;border:1px solid var(--nd-line);background:#060c08;margin-top:12px}.nd-operator>svg{color:#9dbba7;flex:0 0 20px}.nd-operator b{font-size:10px}.nd-operator p{color:#a2b5a8;font-size:9px;margin:8px 0}.nd-operator small{color:#627b6a;font-size:8px}
+.nd-controls{display:grid;gap:7px;margin-top:12px}.nd-controls button,.nd-controls a{font:9px var(--mono);border:1px solid #2b4c35;padding:11px;background:transparent;color:#88ad94;text-align:center;cursor:pointer;text-decoration:none}.nd-controls button:first-child{background:var(--nd-green);color:#001006;border-color:var(--nd-green);font-weight:600}
+.nd-panel{border:1px solid var(--nd-line);background:#040a06;padding:14px 16px;min-width:0}.nd-panel>.nd-label{margin-bottom:10px}
+.nd-candidates{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.nd-candidates article{padding:10px;border:1px solid #2f5140;background:#050f09;min-width:0}.nd-candidates article>div{display:flex;justify-content:space-between;align-items:center;gap:5px}.nd-candidates b{font-size:10px;overflow-wrap:anywhere}.nd-candidates i{flex:0 0 4px;width:4px;height:4px;background:var(--nd-green)}.nd-candidates small{display:block;color:#718a79;font-size:8px;line-height:1.6;margin-top:5px}.nd-candidates .nd-rejected{border-color:#63403e}.nd-candidates .nd-rejected i{background:#ec9292}
+.nd-signal{padding:13px 0 0}.nd-signal .nd-label{font-size:7px;color:#4f715b}.nd-signal svg{display:block;width:100%;height:58px}
+.nd-stages{position:relative;display:flex;justify-content:space-between;gap:10px;margin:5px 0 18px}.nd-stages:before{content:"";position:absolute;left:25px;right:25px;top:24px;border-top:1px dashed #284531}.nd-stages button{position:relative;z-index:1;border:0;background:none;color:#729d7e;font:8px var(--mono);cursor:pointer;display:flex;align-items:center;flex-direction:column;gap:8px;padding:0}
+.nd-stages svg{box-sizing:content-box;width:20px;height:20px;padding:14px;border:1px solid #3d6b49;background:#060e09;transition:.3s}.nd-stages button:hover svg{border-color:var(--nd-green);color:var(--nd-green)}
+.is-running .nd-stages button svg{animation:nd-handoff 3s infinite}.is-running .nd-stages button:nth-child(2) svg{animation-delay:.4s}.is-running .nd-stages button:nth-child(3) svg{animation-delay:.8s}.is-running .nd-stages button:nth-child(4) svg{animation-delay:1.2s}.is-running .nd-stages button:nth-child(5) svg{animation-delay:1.6s}.is-running .nd-stages button:nth-child(6) svg{animation-delay:2s}
+@keyframes nd-handoff{0%,30%,100%{color:#729d7e;box-shadow:none}10%,20%{color:#22f04b;box-shadow:0 0 16px #22f04b24;border-color:#22f04b}}
+.nd-mini-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.nd-mini-stats article{border:1px solid #294d33;padding:10px;min-width:0}.nd-mini-stats small{font-size:7px;color:#8ba994;letter-spacing:.08em}.nd-mini-stats strong{display:block;font-size:18px;font-weight:500;margin:4px 0;letter-spacing:-.05em;overflow-wrap:anywhere}.nd-mini-stats article>span{font-size:7px;line-height:1.5;color:#637d6b}
+.nd-middle{display:grid;grid-template-columns:1fr 1fr;gap:12px}.nd-trade-name{display:flex;justify-content:space-between;gap:8px;align-items:center;margin:15px 0}.nd-trade-name strong{font-size:20px;font-weight:500}.nd-trade-name>b{font-size:14px;color:var(--nd-green)}
+.nd-panel dl{display:grid;grid-template-columns:90px 1fr;margin:14px 0;gap:5px;font-size:10px}.nd-panel dt{color:#6d8876}.nd-panel dd{margin:0;color:#c5d9cc;overflow-wrap:anywhere}
+.nd-why{font-size:8px;line-height:1.8;color:#769e82;border-top:1px solid var(--nd-line);padding-top:10px}.nd-why b{color:var(--nd-green)}
+.nd-trace{font:8px var(--mono);padding:6px 8px;color:var(--nd-green);border:1px solid #30503a;background:transparent;cursor:pointer}
+.nd-tail button{display:block;width:100%;font:9px var(--mono);text-align:left;border:0;border-bottom:1px solid #15251b;padding:8px 0;background:none;color:#91b59c;cursor:pointer}.nd-tail button>span{display:flex;align-items:center;gap:8px;font-size:8px}.nd-tail b{color:var(--nd-green)}.nd-tail em{margin-left:auto;font-style:normal;color:#99c9a7;font-size:7px}.nd-tail small{display:block;margin-top:4px;font-size:8px;line-height:1.6;color:#637d6c}
+.nd-equity{display:grid;grid-template-columns:140px 1fr;gap:20px;align-items:center}.nd-equity>div:first-child{display:grid;grid-template-columns:40px 1fr;gap:8px;align-items:baseline}.nd-equity small{font-size:8px;color:#637e6c}.nd-equity strong{font-size:17px;font-weight:500}.nd-chart{min-width:0}.nd-chart svg{display:block;width:100%;height:105px;overflow:visible}.nd-chart>div{display:flex;justify-content:space-between;gap:10px}.nd-chart>div>span{font-size:8px;color:var(--nd-green)}.nd-chart>div>small{font-size:7px}
+.nd-gridline{fill:none;stroke:#21382a;stroke-width:1;stroke-dasharray:3 5}.nd-line{fill:none;stroke:var(--nd-green);stroke-width:1.7;vector-effect:non-scaling-stroke}.nd-area{fill:#22f04b08;stroke:none}.nd-dot{fill:var(--nd-green)}
+.nd-log button{display:grid;grid-template-columns:64px 64px minmax(0,1fr) 12px;gap:12px;width:100%;padding:11px 0;background:none;border:0;border-bottom:1px solid #15241a;text-align:left;color:#719a7d;font:9px var(--mono);cursor:pointer}.nd-log button:last-child{border-bottom:0}.nd-log button:hover{background:#0a170e}.nd-log time{color:#607e6b}.nd-log b{font-size:7px;border:1px solid #345940;padding:2px 4px;align-self:start;width:max-content;color:#a6d4b3}.nd-log strong{display:block;font-size:9px;font-weight:500;color:#b8cfbf}.nd-log small{display:block;font-size:8px;color:#617f6b;margin-top:4px;line-height:1.6}.nd-log em{font-style:normal;color:var(--nd-green)}
+.night-desk .nd-negative{color:#ec9292}.nd-empty{display:flex;justify-content:center;flex-direction:column;min-height:210px;color:#9cbaa6;gap:10px;font-size:12px;line-height:1.8}.nd-empty>span{color:#526e5c;font-size:10px}.nd-log .nd-empty{min-height:100px}.nd-cursor{animation:nd-blink 1s step-end infinite}@keyframes nd-blink{50%{opacity:0}}
+.nd-footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 18px;border-top:1px solid var(--nd-line);font-size:8px;color:#5f7b68}.nd-footer>span:first-child{color:#91b49b}.nd-footer i{width:4px;height:4px;margin-right:6px}.nd-footer a{color:#8dbc9b;text-decoration:none}
+@media(min-width:1051px){.topbar nav a{padding-inline:12px}}
+@media(max-width:1100px){.night-desk{margin:12px}.nd-layout{grid-template-columns:230px 1fr;gap:12px;padding:12px}.nd-heading{gap:20px;padding:22px 18px}.nd-owl{flex-basis:68px;width:68px;height:68px}.nd-identity{gap:12px}.nd-title h1{font-size:26px}.nd-middle{grid-template-columns:1fr}.nd-agent{padding:12px 9px}.nd-candidates{grid-template-columns:repeat(2,1fr)}.nd-equity{grid-template-columns:1fr}.nd-equity>div:first-child{grid-template-columns:40px 1fr 40px 1fr}.nd-chart svg{height:100px}.nd-panel{padding:12px}.nd-mini-stats strong{font-size:15px}}
+@media(max-width:680px){.night-desk{margin:8px}.nd-topline{padding:9px 10px;font-size:7px;gap:5px}.nd-topline>span:nth-child(2){display:none}.nd-heading{grid-template-columns:1fr;padding:20px 14px;gap:22px}.nd-title h1{font-size:26px}.nd-metrics{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.nd-metrics strong{font-size:20px}.nd-metrics span{font-size:6px;letter-spacing:0}.nd-layout{display:flex;flex-direction:column;padding:10px}.nd-sidebar>[data-nd-agents]{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.nd-agent{margin:0;padding:10px 8px;gap:7px}.nd-agent-icon{flex-basis:23px;width:23px;height:23px}.nd-agent-icon svg{width:15px;height:15px}.nd-agent-name{flex-wrap:wrap;gap:4px}.nd-agent-name b{font-size:11px}.nd-agent-content p{font-size:8px}.nd-agent-content code{font-size:7px}.nd-operator{padding:12px}.nd-controls{grid-template-columns:1fr 1fr}.nd-controls a{grid-column:1/-1}.nd-label{font-size:8px}.nd-label>span:last-child{font-size:6px;max-width:55%}.nd-stages{gap:3px}.nd-stages svg{width:16px;height:16px;padding:9px}.nd-stages:before{top:17px}.nd-stages button{font-size:6px}.nd-mini-stats{grid-template-columns:repeat(2,1fr)}.nd-equity>div:first-child{grid-template-columns:40px 1fr}.nd-chart>div{flex-direction:column;gap:4px}.nd-log button{grid-template-columns:50px 50px minmax(0,1fr) 10px;gap:6px;font-size:8px}.nd-footer{font-size:7px}.nd-footer>span:nth-child(2){display:none}}
+@media(prefers-reduced-motion:reduce){.night-desk *{animation:none!important}}
+.night-desk .nd-agent-content p{font-size:10px}.night-desk .nd-agent-content code{font-size:9px}.night-desk .nd-tail small,.night-desk .nd-log small{font-size:9px}.night-desk .nd-panel dl{font-size:11px}.night-desk .nd-log strong{font-size:10px}.night-desk .nd-mini-stats article>span{font-size:8px}.night-desk .nd-candidates small{font-size:9px}
+@media(max-width:680px){.topbar{display:grid!important;grid-template-columns:70px minmax(0,1fr)!important;height:48px!important}.topbar .brand{width:70px;padding:6px;justify-content:center}.topbar .brand>span:last-child{display:none}.topbar nav{overflow-x:auto;min-width:0;scrollbar-width:none}.topbar nav a{flex-shrink:0;padding:0 12px;white-space:nowrap}.topbar .header-actions{display:none!important}.night-desk .nd-agent-content p{font-size:9px}.night-desk .nd-agent-content code{font-size:8px}}
+
+
+/* Reference-video desk: deliberately compact, with the source video's proportions. */
+body[data-route=desk]{background:#05070b}
+body[data-route=desk]>.topbar{display:none!important}
+body[data-route=desk]>.noise{opacity:.014}
+.night-desk{--nd-line:#20283a;--nd-muted:#8991a3;--nd-green:#b2e65c;width:calc(100% - 28px);max-width:1060px;margin:12px auto;border:1px solid #283044;border-radius:19px;background:#090e17;overflow:hidden;color:#e3e7f1;font:12px/1.45 Consolas,"Courier New",monospace;box-shadow:0 24px 100px #0008}
+.nd-topline{min-height:34px;padding:6px 17px;background:#080d15;border-bottom:1px solid #1a2332;font-size:10px;letter-spacing:0}
+.nd-topline>span:first-child{font-size:18px;color:#f4b64d;letter-spacing:0}.nd-topline>span:nth-child(2){color:#8c93a3;font-size:11px}
+.nd-topline>b{border:1px solid #86602c;background:#251d13;color:#f4b64d;border-radius:4px;padding:2px 7px;font-size:10px}
+.nd-heading{grid-template-columns:minmax(0,1fr) 350px;gap:15px;padding:28px 25px 24px;border-bottom:0}
+.nd-identity{gap:20px;align-items:flex-start}.nd-owl{flex:0 0 114px;width:114px;height:114px;background:none;filter:drop-shadow(0 0 15px #e8b14f26)}
+.nd-owl svg{fill:none;stroke:none}.nd-title{gap:10px;margin-top:7px}.nd-title h1{font:700 40px/1.05 Arial,sans-serif;letter-spacing:-1.4px;white-space:nowrap}.nd-title>span{border:1px solid #835c2a;color:#e9b247;background:#241c12;font:9px Consolas,monospace;padding:2px 5px;border-radius:3px}
+.nd-running{font-size:13px;color:#f4b64d;margin:12px 0 10px;gap:10px}.nd-running i{border-radius:50%;background:#ffb94f;width:9px;height:9px}.nd-running time{color:#f4b64d;font-weight:700;margin-left:8px}
+.nd-latest{color:#efaa4d;border:1px solid #795b30;font-size:10px;border-radius:4px;padding:3px 6px}
+.nd-identity small{font:11px Consolas,monospace;color:#8991a3;margin-top:13px}
+.nd-metrics{gap:20px 30px;grid-template-columns:1.3fr .7fr;padding-top:9px}.nd-metrics strong{font:700 38px/1 Consolas,monospace;letter-spacing:-1.3px}.nd-metrics>div:nth-child(even){text-align:right}.nd-metrics span{font:10px Consolas,monospace;letter-spacing:.06em;margin-top:8px;text-transform:lowercase}.nd-metrics [data-nd=wins]{color:#b5ed5b}.nd-metrics [data-nd=losses]{color:#ff646c}
+.nd-layout{grid-template-columns:290px minmax(0,1fr);gap:12px;padding:0 15px 15px;align-items:start}.nd-workspace{gap:10px}
+.nd-label{font:10px/1.4 Consolas,monospace;letter-spacing:.11em;min-height:24px}.nd-label>span:last-child{font-size:9px;color:#7c8597;letter-spacing:0}.nd-sidebar>.nd-label{padding:0 4px 10px}
+.nd-agent{--agent:#efb34d;position:relative;gap:12px;padding:15px 14px;margin-bottom:10px;border:1px solid #242d42;border-radius:13px;background:#101626;min-height:125px;transition:background .2s,border-color .2s,box-shadow .2s}
+.nd-agent:nth-child(2){--agent:#ff6b65}.nd-agent:nth-child(3){--agent:#a29af0}.nd-agent:nth-child(4){--agent:#7ed4ff}.nd-agent:nth-child(5){--agent:#f1c56a}.nd-agent:nth-child(6){--agent:#b5eb63}
+.nd-agent.nd-recent{border-left:1px solid #242d42}.nd-agent.nd-focus{border:2px solid var(--agent);padding:14px 13px;background:#141f32;box-shadow:0 0 16px color-mix(in srgb,var(--agent) 22%,transparent),inset 0 0 18px color-mix(in srgb,var(--agent) 7%,transparent)}
+.nd-agent:hover,.nd-agent:focus-visible{border-color:var(--agent);background:#151d2e}
+.nd-agent-icon{border:0;border-radius:9px;width:42px;height:42px;flex-basis:42px;color:var(--agent);background:color-mix(in srgb,var(--agent) 14%,#111626)}.nd-agent-icon svg{width:25px;height:25px;stroke-width:1.7}
+.nd-agent-name b{font:700 17px Arial,sans-serif}.nd-agent-name em{color:var(--agent);font:9px Consolas,monospace;border:1px solid color-mix(in srgb,var(--agent) 55%,transparent);border-radius:4px;padding:3px 5px;background:color-mix(in srgb,var(--agent) 6%,transparent)}
+.nd-agent-content>small{font:11px Arial,sans-serif;letter-spacing:0;color:#a0a6b5;line-height:1.5;margin-top:4px;text-transform:lowercase}
+.night-desk .nd-agent-content p{color:var(--agent);font:600 12px/1.5 Arial,sans-serif;margin:14px 0 5px;margin-left:-54px}
+.night-desk .nd-agent-content code{font:11px/1.5 Consolas,monospace;color:#b2b8c8;margin-left:-54px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nd-operator{gap:12px;border:1px solid #242d42;background:#101626;border-radius:13px;padding:16px;min-height:111px;margin-top:0}.nd-operator>svg{width:32px;height:32px;padding:6px;box-sizing:content-box;background:#252a36;border-radius:8px;color:#d8deed}
+.nd-operator b{font:700 17px Arial,sans-serif}.nd-operator p{font:11px/1.5 Arial,sans-serif;color:#9da5b8;margin:5px 0}.nd-operator small{display:block;font:10px/1.5 Consolas,monospace;color:#7d879d}
+.nd-controls{grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}.nd-controls button,.nd-controls a{border-radius:5px;border-color:#384157;background:#101626;color:#c3ccdf;font:9px Consolas,monospace;padding:9px 5px}.nd-controls button:first-child{background:#f0b24d;border-color:#f0b24d;color:#17100b;font-weight:700}.nd-controls a{grid-column:1/-1}.nd-controls button:hover{filter:brightness(1.15)}
+.nd-panel{padding:14px 16px;background:#101626;border:1px solid #232c41;border-radius:13px}.nd-panel>.nd-label{margin-bottom:10px}
+.nd-pipeline>.nd-label{font-size:9px;letter-spacing:.06em}.nd-pipeline>.nd-label>span:last-child{font-size:8px;max-width:55%}
+.nd-candidates{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.nd-candidates article{padding:9px 10px;border:1px solid #5088a7;background:#0b111f;border-radius:9px}.nd-candidates b{font:700 12px Consolas,monospace}.night-desk .nd-candidates small{font:10px/1.5 Consolas,monospace;color:#8992a6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.nd-candidates i{width:7px;height:7px;background:#78c9f3;border-radius:50%}.nd-candidates .nd-rejected{border-color:#874645}.nd-candidates .nd-rejected i{background:#fa6c64}
+.nd-signal{padding:10px 0 0}.nd-signal>.nd-label{min-height:18px;color:#7a8295;font-size:9px}.nd-signal svg{height:55px;width:100%}
+.nd-stages{margin:2px 0 23px;gap:10px}.nd-stages:before{top:29px;left:30px;right:30px;border-color:#34394d}
+.nd-stages button{--agent:#efb34d;font:10px Consolas,monospace;color:var(--agent);gap:8px}.nd-stages button:nth-child(2){--agent:#fb7168}.nd-stages button:nth-child(3){--agent:#aba3ed}.nd-stages button:nth-child(4){--agent:#80d3ff}.nd-stages button:nth-child(5){--agent:#f3cd77}.nd-stages svg{width:23px;height:23px;padding:17px;border:1px solid color-mix(in srgb,var(--agent) 65%,#111);border-radius:50%;background:#0c1220;color:var(--agent)}
+.nd-stages button.nd-focus svg{box-shadow:0 0 17px color-mix(in srgb,var(--agent) 35%,transparent);border:2px solid var(--agent);padding:16px;color:var(--agent);background:#122138}
+.is-running .nd-stages button svg{animation:none}.nd-stages button:hover svg{color:var(--agent);border-color:var(--agent)}
+.nd-mini-stats{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.nd-mini-stats article{--accent:#e96862;border:1px solid color-mix(in srgb,var(--accent) 55%,#131a2b);background:#0d1220;border-radius:9px;padding:10px 12px}
+.nd-mini-stats article:nth-child(2){--accent:#aba3ed}.nd-mini-stats article:nth-child(3){--accent:#f1cd77}.nd-mini-stats article:nth-child(4){--accent:#b2df63}.nd-mini-stats small{font:9px Consolas,monospace;letter-spacing:.1em;color:var(--accent)}.nd-mini-stats strong{font:700 18px/1.2 Consolas,monospace;margin:5px 0 2px;letter-spacing:-.04em}.night-desk .nd-mini-stats article>span{font:8px Consolas,monospace;color:#858da2;white-space:nowrap}
+.nd-middle{grid-template-columns:1fr 1fr;gap:10px}.nd-middle>.nd-panel{padding:13px 15px;min-height:222px}.nd-middle>.nd-panel:nth-child(2){background:#090f19}.nd-middle .nd-label{font-size:9px}.nd-middle .nd-label>span:last-child{display:none}.nd-middle>.nd-panel:nth-child(2)>.nd-label>span:first-child{color:#eeb248}
+.nd-trade-name{margin:10px 0 10px;gap:5px}.nd-trade-name strong{font:700 22px Consolas,monospace}.nd-trade-name>b{font-size:12px;color:#afe75f}.night-desk .nd-panel dl{grid-template-columns:70px 1fr;font:11px Consolas,monospace;gap:5px;margin:8px 0}.nd-panel dt{color:#9ca4b8}.nd-panel dd{color:#dce1f0;font-weight:700}
+.nd-why{font:10px/1.5 Consolas,monospace;border:0;margin:7px 0 0;padding:0;color:#a6a9b7}.nd-why b{color:#f3b04d}.nd-trace{font:8px Consolas,monospace;border:0;background:transparent;color:#7cc8f1;padding:3px 0}
+.nd-tail button{font:10px Consolas,monospace;padding:6px 0;border-bottom:0;color:#8ba9bd}.nd-tail button>span{font:10px Consolas,monospace;gap:6px}.nd-tail b{color:#7dd3fa}.nd-tail em{font:8px Consolas,monospace;color:#aadc65}.night-desk .nd-tail small{font:9px/1.45 Consolas,monospace;color:#8e98ad;padding-left:0;margin-top:3px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+.nd-result{padding:13px 16px}.nd-result>.nd-label{font-size:9px;letter-spacing:.1em}.nd-result>.nd-label>span:last-child{font-size:8px}
+.nd-equity{grid-template-columns:195px 1fr;gap:10px}.nd-equity>div:first-child{display:grid;grid-template-columns:36px 1fr;gap:7px}.nd-equity small{color:#8d96aa;font-size:10px}.nd-equity strong{font:700 20px Consolas,monospace;letter-spacing:0}.nd-chart svg{height:85px}.nd-chart>div{gap:5px}.nd-chart>div>span{color:#b2e763;font:9px Consolas,monospace}.nd-chart>div>small{font:7px Consolas,monospace;color:#667086}.nd-line{stroke:#8bd6f3;stroke-width:1.8}.nd-dot{fill:#c7f16a}.nd-area{fill:transparent}.nd-gridline{stroke:#273047;stroke-dasharray:0;opacity:.5}
+.nd-log{min-height:255px;padding:13px 16px}.nd-log>.nd-label{font-size:10px}.nd-log button{grid-template-columns:62px 65px minmax(0,1fr) 12px;gap:12px;padding:10px 0;border:0;color:#99a0b4;font:11px Consolas,monospace}.nd-log button:hover{background:#151e31}.nd-log time{color:#8c93a8}.nd-log b{font:9px Consolas,monospace;border:1px solid #617c4a;color:#b7e872;background:#203021;border-radius:4px;padding:3px 5px}.night-desk .nd-log strong{font:700 12px Consolas,monospace;color:#d3d9ea}.night-desk .nd-log small{font:9px/1.4 Consolas,monospace;color:#828b9f;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.nd-log em{font-size:10px;color:#88c8e4}
+.night-desk .nd-negative{color:#fb6c6d}.nd-empty{min-height:160px;font:12px/1.7 Consolas,monospace;color:#c5ccdc}.nd-empty>span{font-size:10px;color:#7c879d}
+.nd-footer{font:8px Consolas,monospace;padding:10px 16px;border-top:1px solid #20283a;color:#737c90}.nd-footer>span:first-child{color:#929cb0}.nd-footer i{background:#e2b358}.nd-footer a{color:#e5bd70}
+.nd-playback{display:flex;gap:7px;align-items:center;justify-content:space-between;margin:10px 0 0;font:9px Consolas,monospace;color:#8a93a8}.nd-playback select{font:10px Consolas,monospace;color:#eac170;background:#111a2b;border:1px solid #46516c;border-radius:4px;padding:4px 6px}
+@media(max-width:850px){.night-desk{max-width:760px}.nd-heading{grid-template-columns:1fr 230px;padding:23px 16px;gap:10px}.nd-title h1{font-size:29px}.nd-title>span{display:none}.nd-owl{width:86px;height:86px;flex-basis:86px}.nd-identity{gap:13px}.nd-metrics strong{font-size:28px}.nd-layout{grid-template-columns:220px minmax(0,1fr);padding:0 12px 12px;gap:10px}.nd-agent{padding:12px 10px;gap:8px;min-height:120px}.nd-agent.nd-focus{padding:11px 9px}.nd-agent-icon{width:30px;height:30px;flex-basis:30px}.nd-agent-name b{font-size:14px}.nd-agent-name em{font-size:8px}.nd-agent-content>small{font-size:10px}.night-desk .nd-agent-content p,.night-desk .nd-agent-content code{margin-left:-38px;font-size:10px}.nd-candidates{grid-template-columns:repeat(2,minmax(0,1fr))}.nd-middle{grid-template-columns:1fr}.nd-stages svg{width:19px;height:19px;padding:10px}.nd-stages button.nd-focus svg{padding:9px}.nd-stages:before{top:20px}.nd-stages button{font-size:8px}.nd-mini-stats{grid-template-columns:repeat(2,1fr)}.nd-equity{grid-template-columns:1fr}.nd-equity>div:first-child{grid-template-columns:36px 1fr 36px 1fr}.nd-log button{grid-template-columns:45px 55px minmax(0,1fr) 8px;gap:6px;font-size:9px}.nd-panel{padding:12px}.nd-topline>span:nth-child(2){font-size:9px}}
+@media(max-width:580px){.night-desk{width:calc(100% - 14px);margin:7px;border-radius:13px}.nd-heading{grid-template-columns:1fr;padding:20px 15px;gap:20px}.nd-title h1{font-size:30px}.nd-owl{width:80px;height:80px;flex-basis:80px}.nd-metrics{grid-template-columns:repeat(4,minmax(0,1fr));padding:0;gap:10px}.nd-metrics>div:nth-child(even){text-align:left}.nd-metrics strong{font-size:24px}.nd-metrics span{font-size:8px}.nd-layout{display:flex;padding:0 10px 10px;flex-direction:column}.nd-sidebar,.nd-workspace{width:100%}.nd-sidebar>[data-nd-agents]{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.nd-agent{min-height:138px;margin:0;padding:12px 9px}.nd-agent.nd-focus{padding:11px 8px}.nd-agent-name b{font-size:13px}.nd-agent-name{gap:3px;flex-wrap:wrap}.nd-agent-name em{font-size:7px;padding:2px 3px}.nd-agent-icon{width:27px;height:27px;flex-basis:27px}.nd-agent-icon svg{width:19px;height:19px}.nd-agent-content>small{font-size:9px}.night-desk .nd-agent-content p{margin-left:-35px;font-size:10px;min-height:30px}.night-desk .nd-agent-content code{margin-left:-35px;font-size:9px}.nd-operator{margin-top:8px;min-height:85px}.nd-operator b{font-size:14px}.nd-controls{margin-bottom:10px}.nd-panel{border-radius:10px}.nd-candidates{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.nd-candidates article{padding:7px 5px;border-radius:6px}.nd-candidates b{font-size:9px}.night-desk .nd-candidates small{font-size:8px}.nd-candidates i{width:4px;height:4px;flex-basis:4px}.nd-stages{margin-bottom:17px}.nd-mini-stats{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.nd-mini-stats article{padding:7px 5px}.nd-mini-stats small{font-size:7px}.nd-mini-stats strong{font-size:13px}.night-desk .nd-mini-stats article>span{font-size:6px;white-space:normal}.nd-middle{grid-template-columns:1fr}.nd-chart>div{flex-direction:row;flex-wrap:wrap}.nd-topline>span:nth-child(2){display:block;font-size:7px}.nd-topline>span:first-child{font-size:16px}.nd-topline>b{font-size:7px}.nd-topline{gap:7px;padding:6px 10px}.nd-heading .nd-identity small{font-size:10px}.nd-log small{max-width:100%}.nd-footer>span:nth-child(2){display:none}}
+
+</style><style>/* Native-only controls and dialogs. Video proportions and card styling remain in styles.css. */
+.native-feed{display:flex;align-items:center;gap:12px;margin:0 15px 14px;border:1px solid #263447;border-radius:7px;padding:8px 12px;color:#8da3b9;font:10px/1.5 Consolas,monospace;background:#0b1420}.native-feed>div{display:flex;align-items:center;gap:8px;margin-right:auto}.native-feed i{width:6px;height:6px;background:#77c7ee;border-radius:50%}.native-feed button,.native-more button{font:9px Consolas,monospace;color:#dfb56c;border:1px solid #5b4930;background:#161c26;border-radius:4px;padding:4px 7px;cursor:pointer}.native-feed>span{font-size:9px;color:#718297;white-space:nowrap}
+.nd-topline>b.online{color:#b7e567;border-color:#678241;background:#172319}.nd-topline>b.offline{color:#ecac62;border-color:#76542d;background:#241b12}
+.native-more{padding:10px 1px;font:9px/1.7 Consolas,monospace;color:#738599}.native-more>span{display:block;margin-bottom:7px}.native-more p{font-size:8px;margin:8px 0 0;color:#718095}.native-more>button:last-child{margin-top:10px}
+.market-card{background:#0b111f;border:1px solid #54849f;border-radius:9px;padding:9px 10px;color:#dce5ef;font:10px Consolas,monospace;text-align:left;min-width:0;cursor:pointer}.market-card>div{display:flex;justify-content:space-between;gap:4px}.market-card b{font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.market-card i{width:5px;height:5px;flex:0 0 5px;background:#79c8ef;border-radius:50%;margin-top:4px}.market-card>strong{display:block;font:600 12px Consolas,monospace;color:#c5e9f6;margin:7px 0 5px}.market-card>small{display:block;font-size:8px;color:#8595a8;margin-top:4px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.market-card.nd-rejected{border-color:#76504b}.market-card.selected{box-shadow:inset 0 0 0 1px #89d6fa;border-color:#89d6fa}.market-card:hover{background:#132232}.native-empty{grid-column:1/-1;padding:24px 12px;font:11px/1.8 Consolas,monospace;color:#7c8fa7}
+.native-buy,.native-close{width:100%;margin-top:10px;padding:9px 7px;background:#1a2b22;color:#b8e278;border:1px solid #648345;border-radius:5px;font:10px Consolas,monospace;cursor:pointer}.native-close{background:#2a1c19;border-color:#875445;color:#efb188}.native-buy:disabled{opacity:.4;cursor:default}.clear-log-filter{padding:0;background:none;border:0;font:8px Consolas,monospace;color:#7a8b9f;cursor:pointer}
+dialog{width:min(700px,94vw);max-height:90vh;background:#0c1422;color:#c6d3e3;border:1px solid #3c4e68;border-radius:14px;padding:0;box-shadow:0 30px 140px #000a;font:12px/1.7 Consolas,monospace}dialog::backdrop{background:#000c}dialog header{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #25364e;padding:15px 20px}dialog h2{font:600 13px Consolas,monospace;margin:0;color:#dfbd7e}dialog header button{background:none;border:0;color:#a6bdd6;cursor:pointer;font-size:23px}dialog form>p{padding:0 20px;color:#7d94ad;font-size:10px}.risk-fields{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:10px 20px 20px}.risk-fields label{font-size:10px;color:#8da4bd}.risk-fields input,.risk-fields select{width:100%;display:block;margin-top:5px;color:#d7e5f5;background:#080f1b;border:1px solid #344860;border-radius:5px;padding:9px;font:12px Consolas,monospace;color-scheme:dark}.confirm{display:flex;align-items:center;gap:8px;padding:0 20px;font-size:10px;color:#8ba6be}.confirm input{accent-color:#dcae59}.dialog-primary{display:block;width:calc(100% - 40px);margin:15px 20px 20px;padding:12px;border:1px solid #cd9d48;border-radius:6px;background:#e3ac4d;color:#15110b;font:700 11px Consolas,monospace;cursor:pointer}.manual-body{padding:15px 22px 25px;font-size:11px;color:#849cb6}.manual-body h3{color:#b7cae0;font-size:12px;font-weight:500;margin:15px 0 7px}.manual-body p{margin:5px 0 12px}.manual-body a{color:#82c5f0}.watch-table{overflow:auto;padding:12px}.watch-table table{border-collapse:collapse;font:10px Consolas,monospace;width:100%;text-align:left}.watch-table td,.watch-table th{padding:10px;border-bottom:1px solid #22334a;color:#9fb7d1;white-space:nowrap}.watch-table th{font-weight:400;color:#577794}.watch-table button{padding:4px 7px;font:9px Consolas,monospace;border:1px solid #465d7a;color:#8dcaed;background:#101e30;cursor:pointer}
+.native-toast{position:fixed;bottom:20px;right:20px;z-index:150;max-width:min(460px,90vw);border:1px solid #8a6b36;padding:14px 20px;color:#e1c188;background:#171810;border-radius:6px;font:11px/1.8 Consolas,monospace}[hidden]{display:none!important}
+@media(max-width:580px){.native-feed{margin:0 10px 10px;gap:7px;padding:8px;font-size:8px;flex-wrap:wrap}.native-feed>div{width:100%;font-size:9px}.nd-title h1{font-size:27px}.market-card{padding:7px 5px}.market-card b{font-size:9px}.market-card>strong{font-size:10px}.market-card small{font-size:7px}.risk-fields{grid-template-columns:1fr;padding:10px 15px}.manual-body{padding:10px 15px}.native-more{font-size:9px}}
+.nd-log .nd-label button.clear-log-filter{display:inline-block;width:auto;padding:0;border:0;background:none;font:8px Consolas,monospace;white-space:nowrap;grid-template-columns:none;color:#7a8b9f}
+.native-more button:disabled{opacity:.4;cursor:default}
+
+</style></head><body>
+<dialog id="settings"><form id="risk-form"><header><h2>SESSION / RISK POLICY</h2><button type="button" data-action="close-dialog">×</button></header><p>Creates a fresh paper ledger. Export first. No real funds or wallet are connected.</p><div class="risk-fields">
+<label>Paper capital / USD<input name="initial" type="number" min="1" max="1000000" step=".01" value="33.40" required></label><label>Allocation / %<input name="allocation" type="number" min="1" max="25" value="10" required></label>
+<label>Take profit / net %<input name="takeProfit" type="number" min=".1" max="100" step=".1" value="4" required></label><label>Stop loss / net %<input name="stopLoss" type="number" min=".1" max="50" step=".1" value="2" required></label>
+<label>Maximum hold / sec<input name="maxHold" type="number" min="15" max="86400" value="180" required></label><label>Session loss stop / %<input name="lossLimit" type="number" min="1" max="25" value="10" required></label>
+<label>Minimum liquidity / USD<input name="minLiquidity" type="number" min="1000" step="1000" value="25000" required></label><label>Minimum volume / 1h USD<input name="minVolume" type="number" min="0" step="100" value="1000" required></label>
+<label>Estimated impact cap / %<input name="maxImpact" type="number" min=".05" max="1.5" step=".05" value="1.5" required></label><label>Poll interval<select id="poll-setting"><option value="15000">15 seconds</option><option value="30000">30 seconds</option><option value="5000">5 seconds</option></select></label></div>
+<label class="confirm"><input type="checkbox" required> I understand this replaces the current paper session.</label><p id="settings-message" role="status"></p><button class="dialog-primary" type="submit">CREATE PAPER SESSION</button></form></dialog>
+<dialog id="manual"><header><h2>DATA / MODEL NOTES</h2><button data-action="close-dialog">×</button></header><div class="manual-body"><h3>Native implementation</h3><p>This page is a native HTML/JavaScript application. Six deterministic roles share one persistent paper ledger. They are not LLM agents.</p><h3>Real market observations</h3><p>Solana watchlist and aggregate USD prices come from <a href="https://docs.dexscreener.com/api/reference" target="_blank" rel="noopener noreferrer">DEX Screener</a>. Recent profiles are discovery metadata; they may include old or promoted tokens. Fetch time does not prove the upstream pool quote changed at that instant. A source link is provided for the selected pair.</p><h3>Guard is limited</h3><p>Checks price retrieval age, reported USD liquidity, hourly volume and recent-sell metadata. There is no on-chain sell simulation, honeypot scanner, mint/freeze-authority verification or secured signer. LIMITED is not a token safety approval.</p><h3>Paper fill model</h3><p>Allocation uses available paper cash. Fills use aggregate USD price plus a constant-product reserve impact approximation, not an executable DEX quote. Modeled fees are 0.1% on each side. Actual pool fees, routes, MEV and transaction confirmation are not modeled.</p><h3>Paper strategy</h3><p>When armed: positive 5m change + basic screen → one position. Net take profit, stop loss, maximum hold or session loss limit trigger a modeled exit only on a fresh held-pair observation. Pausing stops automatic paper orders; observations continue. Manual closes also require a fresh quote and estimated impact within policy. No quote means no new fill.</p><h3>Storage and runtime</h3><p>Cash, positions, trades and decisions are stored in this browser. Refresh restores the strategy paused. Closing the browser stops operation. Export JSON for a full audit and CSV for closed trades. The chart shows the latest 600 observed marks. This application contains no fabricated profit history and no synthetic quote fallback.</p></div></dialog>
+<dialog id="markets"><header><h2>LIVE WATCHLIST</h2><button data-action="close-dialog">×</button></header><div class="watch-table" data-watch-table></div></dialog>
+<div class="native-toast" role="status" aria-live="polite" hidden></div><script>const NativeModel=(()=>{const roles=[['Scout','DISCOVERY'],['Guard','BASIC SCREEN'],['Sizer','POSITION RISK'],['Trigger','PAPER EXECUTION'],['Scribe','DECISION AUDIT'],['Ledger','RECONCILIATION']];
+const defaults=Object.freeze({initial:33.4,allocation:10,maxImpact:1.5,minLiquidity:25000,minVolume:1000,takeProfit:4,stopLoss:2,maxHold:180,lossLimit:10,feePct:.1});
+const finite=n=>typeof n==='number'&&Number.isFinite(n);
+const round=n=>Math.round(n*1e8)/1e8;
+function config(input={}){
+ const c={...defaults,...input};for(const k of Object.keys(defaults))if(!finite(c[k]))throw Error('Invalid setting: '+k);
+ if(c.initial<1||c.initial>1e6||c.allocation<1||c.allocation>25||c.maxImpact<.05||c.maxImpact>1.5||c.minLiquidity<1000||c.minVolume<0||c.takeProfit<.1||c.takeProfit>100||c.stopLoss<.1||c.stopLoss>50||c.maxHold<15||c.maxHold>86400||c.lossLimit<1||c.lossLimit>25||c.feePct<0||c.feePct>2)throw Error('Settings outside permitted range');
+ return c;
+}
+function createSession(input={}){
+ const c=config(input);return {version:1,config:c,cash:c.initial,realized:0,position:null,trades:[],logs:[],history:[{at:Date.now(),value:c.initial}],filtered:0,blockedKeys:[],counter:0,halted:false};
+}
+function fresh(pair,now=Date.now()){return !!pair&&finite(pair.price)&&pair.price>0&&finite(pair.receivedAt)&&now>=pair.receivedAt&&now-pair.receivedAt<=45000;}
+function screen(pair,c=defaults,now=Date.now()){
+ if(!fresh(pair,now))return 'Price missing or fetched more than 45s ago';
+ if(!finite(pair.liquidity)||pair.liquidity<c.minLiquidity)return 'Liquidity below policy';
+ if(!finite(pair.volumeH1)||pair.volumeH1<c.minVolume)return '1h volume below policy';
+ if(!finite(pair.sellsM5)||pair.sellsM5<1)return 'No recent sells reported by provider';
+ return null;
+}
+function impactPct(size,pair){
+ if(!finite(pair?.liquidity)||pair.liquidity<=0)return Infinity;
+ // Constant-product reserve approximation, not a router quote or executable price.
+ const reserve=pair.liquidity/2;return size/(reserve+size)*100;
+}
+function equity(s,pair){
+ if(!s.position)return s.cash;
+ const p=s.position,price=finite(pair?.price)&&pair.price>0?pair.price:p.lastPrice;
+ const gross=p.units*price,impact=impactPct(gross,pair||{liquidity:p.lastLiquidity});
+ return round(s.cash+gross*(1-impact/100)*(1-s.config.feePct/100));
+}
+function record(s,agent,decision,reason,trace,now){s.logs.unshift({at:new Date(now).toISOString(),trace,agent,decision,reason,mode:'LIVE DATA / PAPER EXECUTION'});}
+function reject(s,pair,reason,now=Date.now()){
+ const next=structuredClone(s),key=(pair?.pairAddress||'unknown')+':'+reason;
+ if(!next.blockedKeys.includes(key)){next.blockedKeys.push(key);next.filtered++;record(next,'Guard','REJECT',reason,next.position?.trace||'WATCH',now);}
+ return next;
+}
+function openPaper(s,pair,now=Date.now(),manual=false){
+ if(s.position)throw Error('A paper position is already open');
+ if(s.halted)throw Error('Session loss stop is active');
+ const reason=screen(pair,s.config,now);if(reason)throw Error(reason);
+ const size=round(s.cash*s.config.allocation/100),impact=impactPct(size,pair);
+ if(size<=0||size>s.cash||!finite(impact)||impact>s.config.maxImpact)throw Error('Estimated price impact exceeds policy');
+ const next=structuredClone(s),trace='NJ-'+now.toString(36).toUpperCase()+'-'+String(++next.counter).padStart(3,'0');
+ const entry=pair.price*(1+impact/100),units=size/(entry*(1+next.config.feePct/100));
+ next.cash=round(next.cash-size);
+ next.position={trace,at:new Date(now).toISOString(),openedAt:now,pairAddress:pair.pairAddress,baseAddress:pair.baseAddress,symbol:pair.symbol,entry,entryMark:pair.price,units,size,slippage:impact,lastPrice:pair.price,lastLiquidity:pair.liquidity,lastReceivedAt:pair.receivedAt,mode:'PAPER',reason:manual?'Operator requested paper entry':'Positive 5m change and basic market screen'};
+ record(next,'Scout','CANDIDATE',pair.symbol+' · 5m '+pair.changeM5+'% · volume/h $'+pair.volumeH1.toFixed(0),trace,now);
+ record(next,'Guard','LIMITED','Liquidity, volume and recent-sell metadata passed. Honeypot, mint/freeze controls and sell simulation NOT verified.',trace,now);
+ record(next,'Sizer','SIZED','$'+size.toFixed(2)+' · '+next.config.allocation+'% of available paper cash',trace,now);
+ record(next,'Trigger','OPEN','Paper fill only · aggregate price $'+pair.price+' · estimated impact '+impact.toFixed(4)+'% · no transaction sent',trace,now);
+ record(next,'Scribe','RECORDED',next.position.reason,trace,now);
+ return next;
+}
+function closePaper(s,pair,reason='Operator paper close',now=Date.now()){
+ if(!s.position)throw Error('No paper position to close');
+ if(!pair||pair.pairAddress!==s.position.pairAddress||!fresh(pair,now))throw Error('A fresh quote for the held pair is required');
+ const next=structuredClone(s),p=next.position,gross=p.units*pair.price,impact=impactPct(gross,pair);
+ if(!finite(impact)||impact>next.config.maxImpact)throw Error('Exit impact estimate exceeds policy; paper position remains open');
+ const exit=pair.price*(1-impact/100),proceeds=round(p.units*exit*(1-next.config.feePct/100)),pnl=round(proceeds-p.size);
+ next.cash=round(next.cash+proceeds);next.realized=round(next.realized+pnl);
+ next.trades.unshift({...p,at:new Date(now).toISOString(),closedAt:now,exit,pnl,proceeds,balance:next.cash,exitImpact:impact,fees:round(p.size-p.size/(1+next.config.feePct/100)+p.units*exit*next.config.feePct/100),reason});
+ next.position=null;
+ record(next,'Trigger','CLOSED',reason+' · estimated exit impact '+impact.toFixed(4)+'%',p.trace,now);
+ record(next,'Scribe','RECORDED','Entry and exit costs reconciled under '+p.trace,p.trace,now);
+ record(next,'Ledger','SETTLED','Net '+pnl.toFixed(4)+' USD · cash $'+next.cash.toFixed(4),p.trace,now);
+ if(next.cash<=next.config.initial*(1-next.config.lossLimit/100)){next.halted=true;record(next,'Guard','HALTED','Session loss limit reached; new entries disabled',p.trace,now);}
+ return next;
+}
+function onQuotes(s,pairs,auto=false,now=Date.now()){
+ let next=structuredClone(s);
+ if(next.position){
+  const pair=pairs.find(q=>q.pairAddress===next.position.pairAddress);
+  if(fresh(pair,now)){
+   next.position.lastPrice=pair.price;next.position.lastLiquidity=pair.liquidity;next.position.lastReceivedAt=pair.receivedAt;
+   const net=equity(next,pair)-next.cash-next.position.size,returnPct=net/next.position.size*100,age=(now-next.position.openedAt)/1000;
+   let reason=null;
+   if(returnPct<=-next.config.stopLoss)reason='Stop loss '+returnPct.toFixed(2)+'%';
+   else if(returnPct>=next.config.takeProfit)reason='Take profit '+returnPct.toFixed(2)+'%';
+   else if(equity(next,pair)<=next.config.initial*(1-next.config.lossLimit/100))reason='Session equity loss limit';
+   else if(age>=next.config.maxHold)reason='Maximum hold time '+next.config.maxHold+'s';
+   if(reason&&auto){try{next=closePaper(next,pair,reason,now);}catch(error){next=reject(next,pair,error.message,now);}}
+  }
+ }else if(auto&&!next.halted){
+  for(const pair of pairs){
+   const reason=screen(pair,next.config,now);
+   if(reason){next=reject(next,pair,reason,now);continue;}
+   if(!finite(pair.changeM5)||pair.changeM5<=0)continue;
+   try{next=openPaper(next,pair,now);break;}catch(error){next=reject(next,pair,error.message,now);}
+  }
+ }
+ const pair=next.position?pairs.find(q=>q.pairAddress===next.position.pairAddress):null;
+ next.history.push({at:now,value:equity(next,pair)});if(next.history.length>600)next.history.shift();
+ return next;
+}
+function validateSession(s){
+ config(s.config);if(s.version!==1||!finite(s.cash)||s.cash<0||!finite(s.realized)||!Array.isArray(s.trades)||!Array.isArray(s.logs)||!Array.isArray(s.history)||!Array.isArray(s.blockedKeys)||!Number.isInteger(s.counter))throw Error('Invalid stored session');
+ const pnl=s.trades.reduce((sum,t)=>sum+t.pnl,0);
+ if(s.position&&(!finite(s.position.units)||s.position.units<=0||!finite(s.position.entry)||s.position.entry<=0||!finite(s.position.size)||s.position.size<=0||!finite(s.position.lastPrice)||s.position.lastPrice<=0||typeof s.position.pairAddress!=='string'||typeof s.position.baseAddress!=='string'))throw Error('Invalid stored position');
+ if(Math.abs(pnl-s.realized)>1e-5||Math.abs(s.cash+(s.position?.size||0)-s.config.initial-s.realized)>1e-5)throw Error('Stored ledger cannot reconcile');
+ return s;
+}
+
+;return {roles,defaults,config,createSession,fresh,screen,impactPct,equity,reject,openPaper,closePaper,onQuotes,validateSession};})();
+const NativeMarket=(()=>{const NATIVE_SOL='So11111111111111111111111111111111111111112';
+const base=typeof location!=='undefined'&&['localhost','127.0.0.1'].includes(location.hostname)?'/api/dex':'https://api.dexscreener.com';
+const address=s=>typeof s==='string'&&/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(s);
+let profiles=[],profilesAt=0;
+async function json(path){
+ const response=await fetch(base+path,{signal:AbortSignal.timeout(12000),headers:{accept:'application/json'}});
+ if(!response.ok)throw Error('DEX Screener HTTP '+response.status);
+ return response.json();
+}
+function normalizePair(p,at=Date.now()){
+ const price=Number(p.priceUsd);
+ if(p.chainId!=='solana'||!address(p.pairAddress)||!address(p.baseToken?.address)||!Number.isFinite(price)||price<=0)return null;
+ return {pairAddress:p.pairAddress,baseAddress:p.baseToken.address,symbol:String(p.baseToken.symbol||'TOKEN').slice(0,20)+'/'+String(p.quoteToken?.symbol||'USD').slice(0,12),price,liquidity:Number(p.liquidity?.usd)||0,volumeH1:Number(p.volume?.h1)||0,changeM5:Number.isFinite(Number(p.priceChange?.m5))?Number(p.priceChange.m5):null,sellsM5:Number(p.txns?.m5?.sells)||0,buysM5:Number(p.txns?.m5?.buys)||0,createdAt:p.pairCreatedAt||null,receivedAt:at,source:'DEX Screener',url:'https://dexscreener.com/solana/'+p.pairAddress};
+}
+async function loadMarket(position=null){
+ let profileError=null;
+ if(Date.now()-profilesAt>60000){try{const list=await json('/token-profiles/latest/v1');if(!Array.isArray(list))throw Error('Invalid profiles response');profiles=list.filter(p=>p.chainId==='solana'&&address(p.tokenAddress)).slice(0,10);profilesAt=Date.now();}catch(error){profileError=error.message;}}
+ const tokens=[...new Set([NATIVE_SOL,...profiles.map(p=>p.tokenAddress),...(position?[position.baseAddress]:[])])].filter(address).slice(0,20);
+ const raw=await json('/tokens/v1/solana/'+tokens.join(','));
+ if(!Array.isArray(raw))throw Error('Invalid pair response');
+ const at=Date.now(),mapped=raw.map(p=>normalizePair(p,at)).filter(Boolean);
+ const best=new Map();
+ for(const p of mapped)if(!best.has(p.baseAddress)||p.liquidity>best.get(p.baseAddress).liquidity)best.set(p.baseAddress,p);
+ const pairs=[...best.values()].sort((a,b)=>b.volumeH1-a.volumeH1).slice(0,12);
+ if(position&&!pairs.some(p=>p.pairAddress===position.pairAddress)){
+  let held=mapped.find(p=>p.pairAddress===position.pairAddress);
+  if(!held){const response=await json('/latest/dex/pairs/solana/'+position.pairAddress);held=(response.pairs||[]).map(p=>normalizePair(p,Date.now())).find(Boolean);}
+  if(held)pairs.unshift(held);
+ }
+ if(!pairs.length)throw Error('No valid Solana pair prices returned');
+ return {pairs,receivedAt:at,profileError,source:'DEX Screener',scope:profileError?'SOL + cached watchlist':'Recent profiles + SOL watchlist'};
+}
+
+;return {loadMarket,normalizePair};})();
+const NativeView=(()=>{const {roles,screen,impactPct,equity}=NativeModel;const icons={
+Scout:'<ellipse cx="12" cy="12" rx="9" ry="6"/><circle cx="12" cy="12" r="2.5"/>',
+Guard:'<path d="M12 3 20 6v6c0 5-8 9-8 9s-8-4-8-9V6z"/><path d="m8 12 3 3 5-6"/>',
+Sizer:'<path d="M3 17a9 9 0 0 1 18 0M12 14l5-6"/><circle cx="12" cy="15" r="1"/>',
+Trigger:'<path d="m14 2-9 12h6l-1 8 9-12h-6z"/>',
+Scribe:'<path d="m4 16 12-12 4 4L8 20l-5 1zM13 7l4 4"/>',
+Ledger:'<path d="M4 3h16v18H4zM8 8h8M8 12h8M8 16h5"/>',
+You:'<path d="M19 15A8 8 0 0 1 9 5a8 8 0 1 0 10 10z"/>'
+};
+const icon=n=>'<svg viewBox="0 0 24 24" aria-hidden="true">'+icons[n]+'</svg>';
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money=n=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(n);
+const when=s=>new Date(s).toLocaleTimeString('en-GB',{hour12:false});
+const owl="<svg viewBox=\"0 0 112 112\" aria-hidden=\"true\"><defs><radialGradient id=\"owlshade\"><stop stop-color=\"#343b4a\"/><stop offset=\"1\" stop-color=\"#1b2232\"/></radialGradient></defs><path d=\"m19 33-4-22 25 12m53 10 4-22-25 12\" fill=\"#171e2b\"/><circle cx=\"56\" cy=\"58\" r=\"49\" fill=\"url(#owlshade)\" stroke=\"#eeb24d\" stroke-width=\"2.5\"/><ellipse cx=\"38\" cy=\"55\" rx=\"12\" ry=\"14\" fill=\"#f4efdc\"/><ellipse cx=\"74\" cy=\"55\" rx=\"12\" ry=\"14\" fill=\"#f4efdc\"/><circle cx=\"40\" cy=\"57\" r=\"7\" fill=\"#0c1321\"/><circle cx=\"72\" cy=\"57\" r=\"7\" fill=\"#0c1321\"/><circle cx=\"42\" cy=\"53\" r=\"2.7\" fill=\"#fff\"/><circle cx=\"74\" cy=\"53\" r=\"2.7\" fill=\"#fff\"/><path d=\"m50 74 6 10 6-10\" fill=\"#f6bc49\"/></svg>";
+const label=(a,b)=>'<div class="nd-label"><span>'+a+'</span><span>'+b+'</span></div>';
+function mountView(){
+ const section=document.createElement('section');section.className='night-desk';section.id='desk';
+ section.innerHTML='<div class="nd-topline"><span>☾</span><span>Nightjar Terminal — live market · paper ledger</span><b data-network>CONNECTING</b></div><header class="nd-heading"><div class="nd-identity"><div class="nd-owl">'+owl+'</div><div><div class="nd-title"><h1>Nightjar Terminal</h1><span>NATIVE / 01</span></div><p class="nd-running"><i></i><b data-nd-status>STANDBY</b><time data-nd-clock></time></p><div class="nd-latest" data-nd-latest>NO REASON, NO TRADE</div><small>no reason, no trade</small></div></div><div class="nd-metrics">'+[['balance','balance'],['trades','trades'],['wins','wins'],['losses','losses']].map(([k,v])=>'<div><strong data-nd="'+k+'">—</strong><span>'+v+'</span></div>').join('')+'</div></header><div class="nd-layout"><aside class="nd-sidebar">'+label('AGENTS','6 local roles')+'<div data-agents></div><article class="nd-operator">'+icon('You')+'<div><b>YOU</b><p>reads the log with coffee</p><small>browser-local paper session</small></div></article><div class="nd-controls"><button data-action="auto" data-auto>START PAPER STRATEGY</button><button data-action="json">EXPORT SESSION ↗</button><a href="#settings" data-action="settings">RISK SETTINGS ↗</a></div></aside><div class="nd-workspace"><section class="nd-panel nd-pipeline">'+label('PIPELINE · scout → safety → size → fire → scribe','LIVE QUOTES · PAPER FILLS')+'<div class="nd-candidates" data-nd-candidates></div><div class="nd-signal">'+label('OBSERVED PRICE / DEX SCREENER','<span data-selected-source>NO PRICE FEED YET</span>')+'<svg viewBox="0 0 640 70" role="img" aria-label="Recent paper balance trajectory" data-nd-signal></svg></div><div class="nd-stages">'+roles.slice(0,5).map(([n])=>'<button data-agent="'+n+'" title="Inspect '+n+' decisions">'+icon(n)+'<span>'+n.toUpperCase()+'</span></button>').join('')+'</div><div class="nd-mini-stats">'+[['filtered','FILTERED'],['size','POSITION POLICY'],['lines','SCRIBE'],['balance','LEDGER']].map(([key,name])=>'<article><small>'+name+'</small><strong data-nd="'+key+'">—</strong><span>'+({filtered:'basic market screen',size:'of current paper equity',lines:'each line has a why',balance:'cash + open mark'}[key])+'</span></article>').join('')+'</div></section><div class="nd-middle"><section class="nd-panel">'+label('TRADE · ENTRY VS EXIT','PAPER EXECUTION')+'<div data-nd-trade></div></section><section class="nd-panel">'+label('$ tail -f night.log','LIVE APPENDS')+'<div class="nd-tail" data-nd-tail></div></section></div><section class="nd-panel nd-result">'+label('RESULT · start vs now','live marks · modeled costs')+'<div class="nd-equity"><div><small>START</small><strong data-nd="initial">—</strong><small>NOW</small><strong data-nd="balance">—</strong></div><div class="nd-chart"><svg viewBox="0 0 640 120" role="img" aria-label="Paper account equity curve" data-nd-chart></svg><div><span data-nd-record></span><small>recent 600 observations · estimated costs</small></div></div></div></section><section class="nd-panel nd-log">'+label('LOG','<button class="clear-log-filter" data-action="clear" data-filter-note>all decisions / click to filter</button>')+'<div data-nd-audit></div></section></div></div><footer class="nd-footer"><span><i></i> LIVE MARKET / PAPER ORDERS / NO WALLET</span><span>rule-based roles · not LLM agents</span><a href="#manual" data-action="manual">DATA / MODEL NOTES ↗</a></footer>';
+ document.body.append(section);const feed=document.createElement('div');feed.className='native-feed';feed.innerHTML='<div><i></i><span data-market-state>Connecting…</span></div><span data-market-count>0 pairs</span><button data-action="refresh">REFRESH ↻</button>';section.querySelector('.nd-heading').after(feed);const more=document.createElement('div');more.className='native-more';more.innerHTML='<span data-market-scope></span><button data-action="markets">WATCHLIST ↗</button><p data-network-info></p><button id="buy-selected-main" data-action="buy">PAPER BUY SELECTED</button><button id="close-position-main" data-action="close" hidden>CLOSE PAPER POSITION</button>';section.querySelector('.nd-controls').after(more);
+
+
+
+}
+function curve(values,height=120){
+ const low=Math.min(...values),high=Math.max(...values),range=high-low||Math.max(low*.01,.01);
+ const points=values.map((v,i)=>[8+i/(Math.max(1,values.length-1))*624,height-14-(v-low)/range*(height-28)]);
+ if(points.length===1)points.push([632,points[0][1]]);
+ const path=points.map(([x,y],i)=>(i?'L':'M')+x.toFixed(1)+' '+y.toFixed(1)).join(' '),last=points.at(-1);
+ return '<path class="nd-gridline" d="M0 '+height/2+'H640M0 '+(height-14)+'H640"/><path class="nd-area" d="'+path+'L'+last[0]+' '+height+'H8Z"/><path class="nd-line" d="'+path+'"/><circle class="nd-dot" cx="'+last[0]+'" cy="'+last[1]+'" r="3"/>';
+}
+function renderView(state,market,selected,auto,network,filter=null){
+ const root=document.querySelector('#desk'),$=s=>root.querySelector(s),pair=market.pairs.find(p=>p.pairAddress===state.position?.pairAddress),balance=equity(state,pair);
+ const wins=state.trades.filter(t=>t.pnl>0).length,losses=state.trades.filter(t=>t.pnl<0).length,latest=state.logs[0];
+ const stats={balance:money(balance),initial:money(state.config.initial),trades:state.trades.length,wins,losses,filtered:state.filtered,size:state.config.allocation+'% EQ',lines:'line #'+state.logs.length};
+ root.querySelectorAll('[data-nd]').forEach(el=>el.textContent=stats[el.dataset.nd]);
+ root.classList.toggle('is-running',auto);
+ $('[data-nd-status]').textContent=state.halted?'LOSS STOP':auto?'paper strategy active':'watching market';
+ $('[data-nd-clock]').textContent=new Date().toLocaleTimeString('en-GB',{hour12:false});
+ $('[data-nd-latest]').textContent=latest?latest.agent.toUpperCase()+' · '+latest.decision+' · '+latest.trace:'WAITING FOR REAL MARKET DATA';
+ const badge=$('[data-network]');badge.textContent=network.online?'LIVE DATA / PAPER':network.loading?'CONNECTING':'DATA OFFLINE';badge.className=network.online?'online':'offline';
+ $('[data-nd-latest]').title='Rule-based role simulators. No LLM or wallet is connected.';
+ const captions={Scout:['recent Solana profiles + pools','observe, never place an order'],Guard:['liquidity + volume + recent sells','basic screen; token audit not connected'],Sizer:['sizes from available paper cash','fixed exposure, no leverage'],Trigger:['aggregate-price paper fills','max estimated impact '+state.config.maxImpact+'%'],Scribe:['records the decision and source','every line has a why'],Ledger:['cash + mark-to-market equity','fees and estimated impact included']};
+ $('[data-agents]').innerHTML=roles.map(([name])=>{const log=state.logs.find(l=>l.agent===name);return '<button class="nd-agent '+(latest?.agent===name?'nd-focus':'')+'" data-agent="'+name+'"><span class="nd-agent-icon">'+icon(name)+'</span><span class="nd-agent-content"><span class="nd-agent-name"><b>'+name.toUpperCase()+'</b><em>'+esc(log?.decision||'WAIT')+'</em></span><small>'+esc(captions[name][0])+'</small><p>'+esc(captions[name][1])+'</p><code title="'+esc(log?.reason||'')+'">'+esc(log?.reason||'Awaiting a market observation.')+'</code></span></button>';}).join('');
+ const candidates=market.pairs.slice(0,4);
+ $('[data-nd-candidates]').innerHTML=candidates.map(p=>{const fail=screen(p,state.config);return '<button class="market-card '+(fail?'nd-rejected':'')+' '+(selected?.pairAddress===p.pairAddress?'selected':'')+'" data-pair="'+esc(p.pairAddress)+'"><div><b>'+esc(p.symbol)+'</b><i></i></div><strong>$'+price(p.price)+'</strong><small>'+(p.changeM5===null?'5m n/a':(p.changeM5>=0?'+':'')+p.changeM5.toFixed(2)+'% / 5m')+'</small><small>'+esc(fail||'basic screen · limited')+'</small></button>';}).join('')||'<div class="native-empty">No market data loaded. Connecting to DEX Screener…</div>';
+ const series=selected?(market.prices[selected.pairAddress]||[]):[];
+ $('[data-nd-signal]').innerHTML=curve(series.length?series:[0],70);
+ root.querySelectorAll('.nd-stages [data-agent]').forEach(el=>el.classList.toggle('nd-focus',el.dataset.agent===latest?.agent));
+ $('[data-nd-chart]').innerHTML=curve(state.history.map(h=>h.value));
+ $('[data-nd-record]').textContent=wins+' W / '+losses+' L · '+state.filtered+' SCREENED OUT';
+ const trade=state.position||state.trades[0],open=!!state.position;
+ const quote=state.position?market.pairs.find(p=>p.pairAddress===state.position.pairAddress):null;
+ $('[data-nd-trade]').innerHTML=trade?'<div class="nd-trade-name"><strong>'+esc(trade.symbol)+'</strong><b class="'+(!open&&trade.pnl<0?'nd-negative':'')+'">'+(open?'OPEN':money(trade.pnl))+'</b></div><dl>'+[['entry',price(trade.entry)],['exit',open?'open':price(trade.exit)],['size',money(trade.size)],['cash',money(state.cash)],['unrealized',open?money(balance-state.cash-state.position.size):'—'],['quote fetched',quote?when(new Date(quote.receivedAt).toISOString()):open?'stale / awaiting':'—']].map(([k,v])=>'<dt>'+k+'</dt><dd>'+esc(v)+'</dd>').join('')+'</dl><p class="nd-why"><b>WHY / </b>'+esc(trade.reason)+'</p><button class="nd-trace" data-trace="'+esc(trade.trace)+'">INSPECT '+esc(trade.trace)+' ↗</button>'+(open?'<button class="native-close" data-action="close">CLOSE PAPER POSITION</button>':''):selected?'<div class="nd-trade-name"><strong>'+esc(selected.symbol)+'</strong><b>$'+price(selected.price)+'</b></div><dl><dt>liquidity</dt><dd>'+money(selected.liquidity)+'</dd><dt>volume / 1h</dt><dd>'+money(selected.volumeH1)+'</dd><dt>sells / 5m</dt><dd>'+selected.sellsM5+'</dd><dt>estimated impact</dt><dd>'+impactPct(state.cash*state.config.allocation/100,selected).toFixed(4)+'%</dd></dl><button class="native-buy" data-action="buy" '+(!network.online||screen(selected,state.config)?'disabled':'')+'>PAPER BUY SELECTED</button><p class="nd-why">Aggregate prices; no executable quote or token audit.</p>':'<div class="nd-empty">Waiting for market data.<br><span>Trades cannot run without a valid price.</span></div>';
+ const filtered=state.logs.filter(l=>!filter||l.agent===filter||l.trace===filter);
+ $('[data-nd-tail]').innerHTML=state.logs.slice(0,5).reverse().map(l=>'<button data-trace="'+esc(l.trace)+'"><span>'+when(l.at)+' <b>'+esc(l.agent)+'</b><em class="'+(['REJECT','OFFLINE'].includes(l.decision)?'nd-negative':'')+'">'+esc(l.decision)+'</em></span><small>'+esc(l.reason)+'</small></button>').join('')||'<div class="nd-empty">$ tail -f night.log<br><span>Waiting for data connection.</span></div>';
+ $('[data-nd-audit]').innerHTML=filtered.slice(0,8).map(l=>'<button data-trace="'+esc(l.trace)+'"><time>'+when(l.at)+'</time><b class="'+(['REJECT','OFFLINE'].includes(l.decision)?'nd-negative':'')+'">'+esc(l.decision)+'</b><span><strong>'+esc(l.agent)+' / '+esc(l.trace)+'</strong><small>'+esc(l.reason)+'</small></span><em>↗</em></button>').join('')||'<div class="nd-empty">No matching decisions.</div>';
+ $('[data-market-state]').textContent=network.online?'DEX Screener · fetched '+when(new Date(market.receivedAt).toISOString()):network.error||'Connecting…';
+ $('[data-market-scope]').textContent=market.scope||'Recent profiles + SOL watchlist';
+ $('[data-selected-source]').innerHTML=selected?'<a href="'+esc(selected.url)+'" target="_blank" rel="noopener noreferrer">SOURCE / '+esc(selected.symbol)+' ↗</a>':'NO PRICE FEED YET';
+ $('[data-auto]').textContent=auto?'PAUSE PAPER STRATEGY':'START PAPER STRATEGY';
+ $('[data-filter-note]').textContent=filter?'filter: '+filter+' / click to clear':'all decisions / click a role or trace';
+ $('[data-network-info]').textContent=network.error||market.profileError||'Profile listings are discovery metadata, not token safety approval.';
+ const count=$('[data-market-count]');count.textContent=market.pairs.length+' pairs';
+ $('#close-position-main').hidden=!state.position;
+ const buy=$('#buy-selected-main');buy.hidden=!!state.position;buy.disabled=!network.online||!selected||!!screen(selected,state.config);buy.textContent=selected?'PAPER BUY '+selected.symbol:'WAITING FOR PRICE';
+}
+function price(n){if(!Number.isFinite(n))return '—';return n>=1?n.toFixed(4):n>=.001?n.toFixed(6):n.toPrecision(5);}
+
+;return {mountView,renderView};})();
+(()=>{const {createSession,validateSession,onQuotes,openPaper,closePaper,reject,equity,screen}=NativeModel;const {loadMarket}=NativeMarket;const {mountView,renderView}=NativeView;mountView();
+const $=s=>document.querySelector(s),key='nightjar.native.v1';
+let state=createSession(),market={pairs:[],prices:{},receivedAt:0,source:'DEX Screener'},network={online:false,loading:false,error:null},selectedId=null,auto=false,filter=null,pollMs=15000,lastAttempt=0,storageOK=true;
+function toast(text){const el=$('.native-toast');el.textContent=text;el.hidden=false;clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.hidden=true,5000);}
+try{const saved=localStorage.getItem(key);if(saved)state=validateSession(JSON.parse(saved));}catch{toast('Stored paper session could not reconcile. A new ledger was created.');}
+function save(){try{localStorage.setItem(key,JSON.stringify(state));storageOK=true;}catch{storageOK=false;toast('Browser storage unavailable. Export the ledger to keep a copy.');}}
+function selected(){return market.pairs.find(p=>p.pairAddress===selectedId)||market.pairs[0]||null;}
+function log(agent,decision,reason,trace='WATCH'){state.logs.unshift({at:new Date().toISOString(),trace,agent,decision,reason,mode:'LIVE DATA / PAPER EXECUTION'});}
+function render(){
+ renderView(state,market,selected(),auto,network,filter);
+ $('[data-watch-table]').innerHTML='<table><thead><tr><th>Pair</th><th>Price / USD</th><th>Liquidity</th><th>5m</th><th></th></tr></thead><tbody>'+market.pairs.map(p=>'<tr><td>'+escape(p.symbol)+'</td><td>'+p.price.toPrecision(6)+'</td><td>$'+p.liquidity.toFixed(0)+'</td><td>'+(p.changeM5??'—')+'%</td><td><button data-pair="'+p.pairAddress+'">SELECT</button></td></tr>').join('')+'</tbody></table>';
+ if(!storageOK)$('[data-network-info]').textContent='Browser storage unavailable. Export your session.';
+}
+function escape(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+async function refresh(){
+ if(network.loading)return;network.loading=true;lastAttempt=Date.now();render();
+ try{
+  const result=await loadMarket(state.position),prices={...market.prices};
+  for(const pair of result.pairs){prices[pair.pairAddress]=[...(prices[pair.pairAddress]||[]),pair.price].slice(-120);}
+  market={...result,prices};network={online:true,loading:false,error:null};
+  if(!market.pairs.some(p=>p.pairAddress===selectedId))selectedId=market.pairs[0]?.pairAddress;
+  log('Scout','OBSERVED',market.pairs.length+' Solana pools · DEX Screener · aggregate USD prices');
+  for(const pair of market.pairs){const reason=screen(pair,state.config);if(reason)state=reject(state,pair,reason);}
+  state=onQuotes(state,market.pairs,auto);
+  if(state.halted)auto=false;
+  save();
+ }catch(error){
+  const changed=network.error!==error.message;
+  network={online:false,loading:false,error:error.message};
+  if(changed){log('Scout','OFFLINE',error.message+' · no new fills until a fresh market observation arrives');save();}
+ }finally{render();}
+}
+function download(name,body,type){const url=URL.createObjectURL(new Blob([body],{type}));const a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+function csv(){const headers=['trace','at','symbol','size','entry','exit','pnl','balance','fees','reason','mode'],q=s=>'"'+String(s??'').replaceAll('"','""')+'"';return '\uFEFF'+[headers.join(','),...state.trades.map(t=>headers.map(k=>q(t[k])).join(','))].join('\r\n');}
+document.addEventListener('click',event=>{
+ const pair=event.target.closest('[data-pair]');if(pair){selectedId=pair.dataset.pair;if($('#markets').open)$('#markets').close();render();return;}
+ const agent=event.target.closest('[data-agent]');if(agent){filter=agent.dataset.agent;render();document.querySelector('.nd-log').scrollIntoView({behavior:'smooth',block:'nearest'});return;}
+ const trace=event.target.closest('[data-trace]');if(trace){filter=trace.dataset.trace;render();document.querySelector('.nd-log').scrollIntoView({behavior:'smooth',block:'nearest'});return;}
+ const action=event.target.closest('[data-action]')?.dataset.action;if(!action)return;
+ if(['settings','manual','markets'].includes(action)){event.preventDefault();if(action==='settings'){for(const [name,value] of Object.entries(state.config)){const input=$('#risk-form [name="'+name+'"]');if(input)input.value=value;}}$('#'+action).showModal();return;}
+ if(action==='close-dialog'){event.target.closest('dialog').close();return;}
+ if(action==='clear'){filter=null;render();return;}
+ if(action==='refresh'){refresh();return;}
+ if(action==='json'){download('nightjar-native-session.json',JSON.stringify({...state,exportedAt:new Date().toISOString(),source:'DEX Screener',execution:'PAPER',networkStatus:network,latestMarketFetchedAt:market.receivedAt},null,2),'application/json');return;}
+ if(action==='csv'){download('nightjar-native-trades.csv',csv(),'text/csv;charset=utf-8');return;}
+ if(action==='auto'){
+  if(state.halted){toast('Session loss stop is active. Create a new paper session in risk settings.');return;}
+  auto=!auto;log('Scribe',auto?'ARMED':'PAUSED',auto?'Paper rule strategy armed. Orders require real observations.':'Automatic paper orders paused; market observation continues.');
+  save();render();if(auto)refresh();return;
+ }
+ if(action==='buy'){try{if(!network.online)throw Error('Market connection is offline');state=openPaper(state,selected(),Date.now(),true);save();render();}catch(error){if(selected())state=reject(state,selected(),error.message);save();render();toast(error.message);}return;}
+ if(action==='close'){try{const pair=market.pairs.find(p=>p.pairAddress===state.position?.pairAddress);state=closePaper(state,pair);save();render();}catch(error){toast(error.message);}return;}
+});
+$('#risk-form').addEventListener('submit',event=>{
+ event.preventDefault();if(!event.currentTarget.reportValidity())return;
+ try{const data=new FormData(event.currentTarget),input={};for(const key of Object.keys(state.config)){if(data.has(key))input[key]=Number(data.get(key));}state=createSession(input);auto=false;filter=null;pollMs=Number($('#poll-setting').value);save();render();$('#settings').close();toast('New paper ledger created. No real funds are connected.');}catch(error){$('#settings-message').textContent=error.message;}
+});
+document.querySelector('.nd-controls').insertAdjacentHTML('beforeend','<button data-action="csv">EXPORT TRADES / CSV ↗</button>');
+for(const dialog of document.querySelectorAll('dialog'))dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close();});
+render();refresh();setInterval(()=>{if(Date.now()-lastAttempt>=pollMs&&!network.loading)refresh();},1000);
+setInterval(()=>{if(network.online&&Date.now()-market.receivedAt>45000){network.online=false;network.error='Market observation is stale. Waiting for a fresh response.';}render();},1000);
+
+})();</script></body></html>

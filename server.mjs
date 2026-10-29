@@ -4,6 +4,9 @@ import { extname, isAbsolute, normalize, relative, resolve } from 'node:path';
 import { createHash, randomBytes, randomUUID, timingSafeEqual } from 'node:crypto';
 
 const root=resolve(import.meta.dirname),dataDir=resolve(process.env.CELLUMO_DATA_DIR||resolve(root,'data')),dataFile=resolve(dataDir,'state.json');
+const nativeHtml=readFileSync(resolve(root,'index.html'),'utf8').replace(/\r\n/g,'\n');
+const nativeHashes=tag=>[...nativeHtml.matchAll(new RegExp('<'+tag+'>([\\s\\S]*?)</'+tag+'>','g'))].map(m=>"'sha256-"+createHash('sha256').update(m[1]).digest('base64')+"'").join(' ');
+const nativeCsp="default-src 'self'; img-src 'self' data:; style-src 'self' https://fonts.googleapis.com "+nativeHashes('style')+"; font-src 'self' https://fonts.gstatic.com; script-src 'self' "+nativeHashes('script')+"; connect-src 'self'";
 const port=Number(process.env.PORT||4210),host=process.env.HOST||'127.0.0.1',adminToken=process.env.CELLUMO_ADMIN_TOKEN||'',registrationKey=process.env.CELLUMO_REGISTRATION_KEY||'';
 const clients=new Set(),rate=new Map(),metrics={startedAt:Date.now(),requests:0};
 const githubChannels=[
@@ -62,7 +65,13 @@ async function githubStream(){
     }catch(error){const stale=githubCache.channels.find(item=>item.repo===channel.repo&&item.content);return stale?{...stale,stale:true,warning:error.message}:{...channel,url:`https://github.com/${channel.repo}`,watchers:channel.stars,issues:0,error:error.message,content:''}}
   })).then(channels=>{const next={at:Date.now(),channels};writeFileSync(githubCacheFile,JSON.stringify(next));return githubCache={...next,refreshing:null}}).catch(error=>{githubCache.refreshing=null;throw error});
   return githubCache.refreshing;
-}const server=http.createServer(async(request,response)=>{metrics.requests++;const url=new URL(request.url,`http://${request.headers.host||'localhost'}`),path=url.pathname;response.setHeader('x-frame-options','DENY');response.setHeader('referrer-policy','no-referrer');response.setHeader('content-security-policy',"default-src 'self'; img-src 'self' data:; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self'; connect-src 'self'");try{
+}const server=http.createServer(async(request,response)=>{metrics.requests++;const url=new URL(request.url,`http://${request.headers.host||'localhost'}`),path=url.pathname;response.setHeader('x-frame-options','DENY');response.setHeader('referrer-policy','no-referrer');response.setHeader('content-security-policy',nativeCsp);try{
+if(path.startsWith('/api/dex/')){
+if(request.method!=='GET'){response.writeHead(405,{'content-type':'application/json'});response.end(JSON.stringify({error:'Read-only market endpoint'}));return;}
+const remote=path.slice(8),allowed=remote==='/token-profiles/latest/v1'||/^\/tokens\/v1\/solana\/[1-9A-HJ-NP-Za-km-z,]{32,1000}$/.test(remote)||/^\/latest\/dex\/pairs\/solana\/[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(remote);
+if(!allowed||url.search){response.writeHead(400,{'content-type':'application/json'});response.end(JSON.stringify({error:'Unsupported market endpoint'}));return;}
+try{const upstream=await fetch('https://api.dexscreener.com'+remote,{signal:AbortSignal.timeout(12000),headers:{accept:'application/json'}});const body=await upstream.text();response.writeHead(upstream.status,{'content-type':'application/json','cache-control':'no-store'});response.end(body);}catch(error){response.writeHead(502,{'content-type':'application/json'});response.end(JSON.stringify({error:'Market connection unavailable',detail:error.message}));}return;
+}
 if(!limit(request))return json(response,429,{error:'rate limit exceeded'});
 if(request.method==='GET'&&path==='/api/health')return json(response,200,{ok:true,service:'cellumo-core',version:state.version,time:now(),uptimeSec:Math.floor(process.uptime())});
 if(request.method==='GET'&&path==='/api/github-stream')return json(response,200,await githubStream());
