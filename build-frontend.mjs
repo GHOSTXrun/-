@@ -1,5 +1,5 @@
-import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
-import {fileURLToPath} from 'node:url';
+import {readFileSync,writeFileSync,mkdirSync,existsSync} from 'node:fs';
+import {fileURLToPath,pathToFileURL} from 'node:url';
 import {join,dirname} from 'node:path';
 import {Script} from 'node:vm';
 const root=dirname(fileURLToPath(import.meta.url));
@@ -25,3 +25,5 @@ mkdirSync(join(root,'dist'),{recursive:true});
 writeFileSync(join(root,'dist/index.html'),html);
 writeFileSync(join(root,'dist/.nojekyll'),'');
 console.log('Built unified single-page workspace: frontend.html and dist/index.html');
+const nativeBuilder=[join(root,'native/build.mjs'),join(root,'../独立终端/build.mjs')].find(path=>existsSync(path));
+if(nativeBuilder){const native=await import(pathToFileURL(nativeBuilder).href);const result=native.build();mkdirSync(join(root,'dist/native'),{recursive:true});writeFileSync(join(root,'dist/native/index.html'),result.html);console.log('Published separate native terminal at /native/.');}

@@ -1,0 +1,20 @@
+import assert from 'node:assert/strict';
+import {createSession,openPaper,closePaper,onQuotes,screen,equity,validateSession,impactPct} from './model.mjs';
+import {normalizePair} from './market.mjs';
+const now=Date.now(),q={pairAddress:'11111111111111111111111111111111',baseAddress:'So11111111111111111111111111111111111111112',symbol:'TEST/USDC',price:100,liquidity:1e6,volumeH1:50000,changeM5:2,sellsM5:10,receivedAt:now};
+let s=createSession();assert.throws(()=>openPaper(s,{...q,receivedAt:now-46000},now));assert.throws(()=>openPaper(s,{...q,liquidity:100},now));
+assert(screen({...q,sellsM5:0},s.config,now));assert.equal(screen(q,s.config,now),null);
+const opened=openPaper(s,q,now);assert(opened.position);assert.equal(opened.trades.length,0);assert(opened.cash<s.cash);assert(equity(opened,q)<s.config.initial);
+assert(opened.logs.some(l=>l.decision==='LIMITED'));assert(!opened.logs.some(l=>l.decision==='PASS'));
+const closed=closePaper(opened,{...q,price:105,receivedAt:now+1000},'test',now+1000);assert(!closed.position);assert(closed.trades[0].pnl>0);assert.equal(validateSession(closed),closed);
+assert(Math.abs(closed.cash-closed.config.initial-closed.realized)<1e-6);
+assert.throws(()=>closePaper(opened,{...q,receivedAt:now-46000},'test',now));
+assert.throws(()=>closePaper(opened,{...q,liquidity:100},'test',now));
+const stop=onQuotes(opened,[{...q,price:90,receivedAt:now+1000}],true,now+1000);assert(!stop.position);assert(stop.trades[0].pnl<0);
+const paused=onQuotes(opened,[{...q,price:90,receivedAt:now+1000}],false,now+1000);assert(paused.position,'Paused strategy must not place automatic exits');
+const stale=onQuotes(opened,[{...q,price:90,receivedAt:now-60000}],true,now);assert(stale.position);
+const auto=onQuotes(s,[q],true,now);assert(auto.position);
+assert(impactPct(1e6,q)>1.5);
+const p=normalizePair({chainId:'solana',pairAddress:q.pairAddress,baseToken:{address:q.baseAddress,symbol:'SOL'},quoteToken:{symbol:'USDC'},priceUsd:'100',liquidity:{usd:1000000},volume:{h1:50000},priceChange:{m5:2},txns:{m5:{sells:10}}},now);assert.equal(p.price,100);assert.equal(p.source,'DEX Screener');assert.equal(normalizePair({chainId:'ethereum'}),null);
+console.log('PASS: live schema, stale-data veto, liquidity and sells screen, limited safety label, entry/exit fees, accounting, exits, pause and retained stale position.');
+

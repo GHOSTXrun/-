@@ -1,0 +1,13 @@
+{
+  "name": "nightjar-native-terminal",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {"node": ">=20"},
+  "scripts": {
+    "start": "node server.mjs",
+    "build": "node build.mjs",
+    "check": "node --check app.mjs && node --check view.mjs && node --check market.mjs && node --check model.mjs && node --check server.mjs && node --check build.mjs",
+    "test": "node model.test.mjs"
+  }
+}
