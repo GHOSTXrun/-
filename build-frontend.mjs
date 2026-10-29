@@ -16,9 +16,8 @@ const expressionEnd=sourceBridge.indexOf(';\n shadow.append(section)',expression
 if(expressionStart<marker.length||expressionEnd<0)throw Error('Native panel template expression missing');
 const panelRoles=(await import(pathToFileURL(join(root,'terminal-engine.mjs')).href)).roles;
 let staticPanel=runInNewContext(helperSource+'\n('+sourceBridge.slice(expressionStart,expressionEnd)+')',{roles:panelRoles});
-const staticAgents=runInNewContext(helperSource+'\nroles.map(([name,role])=>\'<button class="nd-agent" data-nd-agent="\'+name+\'"><span class="nd-agent-icon">\'+icon(name)+\'</span><span class="nd-agent-content"><span class="nd-agent-name"><b>\'+name.toUpperCase()+\'</b><em>READY</em></span><small>\'+role+\'</small><p>paper execution role</p><code>Waiting for session state.</code></span></button>\').join(\'\')',{roles:panelRoles});
+const staticAgents=runInNewContext(helperSource+'\nroles.map(([name,role])=>\'<button class="nd-agent" data-nd-agent="\'+name+\'"><span class="nd-agent-icon">\'+icon(name)+\'</span><span class="nd-agent-content"><span class="nd-agent-name"><b>\'+name.toUpperCase()+\'</b><em>READY</em></span><small>\'+role+\'</small><p>replay execution role</p><code>Waiting for session state.</code></span></button>\').join(\'\')',{roles:panelRoles});
 staticPanel=staticPanel.replace('<div data-nd-agents></div>',()=>'<div data-nd-agents>'+staticAgents+'</div>');
-staticPanel=staticPanel.replace('</div></aside>',()=>'<div class="nd-playback"><span>terminal cadence</span><select id="nd-speed" aria-label="Terminal cadence"><option value="1">1× / 3s</option><option value="2">2× / 1.5s</option><option value="4" selected>4× / 0.75s</option></select></div></div></aside>');
 const styleMatch=html.match(/<template id="video-panel-template"><style>([\s\S]*?)<\/style><\/template>/);
 if(!styleMatch)throw Error('Native panel styles missing');
 html=html.replace('<div id="video-panel-host"></div>',()=>'<div id="video-panel-host"><template shadowrootmode="open"><style>'+styleMatch[1]+'</style><section class="night-desk" id="desk">'+staticPanel+'</section></template></div>');
@@ -42,6 +41,7 @@ const nativeBuilder=[join(root,'native/build.mjs'),join(root,'../独立终端/bu
 if(!nativeBuilder)throw Error('Native terminal source is required for the default homepage');
 const native=await import(pathToFileURL(nativeBuilder).href);const result=native.build();
 mkdirSync(join(root,'dist/legacy'),{recursive:true});writeFileSync(join(root,'dist/legacy/index.html'),html);
+for(const file of ['whitepaper.html','WHITEPAPER.md','WHITEPAPER.pdf']){if(!existsSync(join(root,file)))throw Error('Whitepaper artifact missing: '+file);copyFileSync(join(root,file),join(root,'dist',file));copyFileSync(join(root,file),join(root,'dist/legacy',file));}
 mkdirSync(join(root,'dist/native'),{recursive:true});writeFileSync(join(root,'dist/native/index.html'),result.html);
 mkdirSync(join(root,'dist/native/assets'),{recursive:true});copyFileSync(join(root,'assets/noxvil-logo.png'),join(root,'dist/native/assets/noxvil-logo.png'));
 writeFileSync(join(root,'dist/index.html'),onlineHtml);

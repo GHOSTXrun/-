@@ -12,7 +12,7 @@ function toast(text){const element=$('.toast');element.textContent=text;element.
 try{
  const raw=localStorage.getItem(key);
  if(raw){const parsed=JSON.parse(raw);settings(parsed.config);if(parsed.version!==1||!Array.isArray(parsed.logs)||!Array.isArray(parsed.trades)||!Number.isFinite(parsed.balance)||parsed.balance<0||!Number.isInteger(parsed.cursor)||!Number.isInteger(parsed.filtered))throw Error('会话数据不完整');const balance=parsed.config.initial+parsed.trades.reduce((sum,t)=>sum+t.pnl,0);if(Math.round(balance*100)!==Math.round(parsed.balance*100))throw Error('账本无法核对');if(parsed.position&&!parsed.pendingClose)throw Error('待结算订单不完整');session=parsed;}
-}catch{toast('保存的会话无法恢复，已创建新的模拟会话。');}
+}catch{toast('保存的会话无法恢复，已创建新的回放会话。');}
 let playbackRequested=true;
 try{const pref=JSON.parse(localStorage.getItem(playbackKey)||"null");if(pref){playbackRequested=pref.running!==false;if([1,2,4].includes(pref.speed))speed=pref.speed;}}catch{}
 function savePlayback(){try{localStorage.setItem(playbackKey,JSON.stringify({running,speed}));}catch{}}
@@ -29,12 +29,12 @@ function render(){
  const stats={balance:money(session.balance),pnl:money(pnl),trades:session.trades.length,filtered:session.filtered,cash:money(session.balance-(session.position?.size||0)),initial:money(session.config.initial)};
  for(const el of $$('[data-stat]')){el.textContent=stats[el.dataset.stat];if(el.dataset.stat==='pnl'){el.classList.toggle('negative',pnl<0);el.classList.toggle('positive',pnl>0);}}
  $('#speed').value=String(speed);
- const status=session.halted?'亏损停机':running?'运行中':'已暂停';$$('[data-status]').forEach(el=>el.textContent=status);
+ const status=session.halted?'亏损停机':running?'运行中':'就绪';$$('[data-status]').forEach(el=>el.textContent=status);
  $('[data-record]').textContent=wins+' 盈 / '+losses+' 亏'+(session.trades.length?' · 胜率 '+(wins/session.trades.length*100).toFixed(0)+'%':'');
  $('[data-open]').textContent=session.position?'持仓 '+session.position.symbol:'当前无持仓';
  $('[data-progress]').textContent='已检查 '+session.cursor+' 个候选';
  $('[data-saving]').textContent=storageOK?'自动保存':'未保存 / 请导出';
- for(const toggle of $$('[data-action="toggle"]')){toggle.textContent=session.halted?'已停机 · 设置新会话':running?'暂停终端':'启动终端';toggle.setAttribute('aria-pressed',String(running));}
+ for(const toggle of $$('[data-action="toggle"]')){toggle.textContent=session.halted?'已停机 · 设置新会话':running?'终端控制':'启动终端';toggle.setAttribute('aria-pressed',String(running));}
  const latest=session.logs[0];$('[data-trace-label]').textContent=latest?latest.trace+' / '+latest.agent:'等待第一条信号';
  $('[data-agents]').innerHTML='<div><span>ID</span><span>AGENT</span><span>S</span><span>ROLE</span><span>MODE</span><span>CAP</span><span>STATE</span><span>RESPONSIBILITY</span></div>'+roles.map(([name],i)=>{const log=session.logs.find(l=>l.agent===name);return '<p role="button" tabindex="0" data-agent="'+name+'" class="'+(latest?.agent===name?'template-active':'')+'"><span>100'+i+'</span><b translate="no">'+name+'</b><span>'+(running?'R':'S')+'</span><span>'+['discovery','safety','risk','execution','audit','accounting'][i]+'</span><span>PAPER</span><span>'+['READ','VETO',session.config.allocation+'%',session.config.slippage+'%','LOG','NET'][i]+'</span><span>'+esc(log?decisionNames[log.decision]||log.decision:'待机')+'</span><em>'+roleNames[name]+'</em></p>';}).join('');
  $('[data-pipeline]').innerHTML=roles.map(([name],i)=>'<div class="stage '+(latest?.agent===name?'active':'')+'"><b>0'+(i+1)+'</b><span translate="no">'+name+'</span></div>').join('');
@@ -53,7 +53,7 @@ function render(){
  $('[data-trades]').innerHTML=session.trades.slice(0,100).map(trade=>'<tr><td>'+time(trade.at)+'<small>'+esc(trade.trace)+'</small></td><td translate="no">'+esc(trade.symbol)+'</td><td>'+money(trade.size)+'</td><td class="'+(trade.pnl<0?'negative':'positive')+'">'+money(trade.pnl)+'</td><td>'+money(trade.balance)+'</td><td><button data-trace="'+esc(trade.trace)+'">追踪 ↗</button></td></tr>').join('')||'<tr><td colspan="6">暂无已平仓交易；开仓和安全拒绝均不会提前计为收益。</td></tr>';
  updateVideoPanel(session,running,speed);
 }
-function tick(){if(!running)return;try{session=advance(session);if(session.halted)running=false;save();render();}catch(error){running=false;render();toast('模拟已暂停：'+error.message);}}
+function tick(){if(!running)return;try{session=advance(session);if(session.halted)running=false;save();render();}catch(error){running=false;render();toast('运行已停止：'+error.message);}}
 function download(name,body,type){const url=URL.createObjectURL(new Blob([body],{type}));const a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 function focusLogs(){document.querySelector('#decisions').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'nearest'});}
 document.addEventListener('click',event=>{
@@ -87,7 +87,7 @@ json:()=>document.querySelector("[data-action=json]").click(),
 agent:name=>{if(!roles.some(([n])=>n===name))return;document.querySelector("#agent-filter").value=name;document.querySelector("#agent-filter").dispatchEvent(new Event("change"));focusLogs();},
 trace:id=>{if(typeof id!=="string"||!session.logs.some(log=>log.trace===id))return;traceFilter=id;document.querySelector("#agent-filter").value="all";render();focusLogs();},
 speed:n=>{if(![1,2,4].includes(n))return;document.querySelector("#speed").value=String(n);document.querySelector("#speed").dispatchEvent(new Event("change"));updateVideoPanel(session,running,speed);},
-jump:id=>{if(["risk","manual","decisions"].includes(id))document.getElementById(id).scrollIntoView({behavior:"smooth"});}
+jump:id=>{if(["risk","manual","decisions","whitepaper","project-core"].includes(id))document.getElementById(id).scrollIntoView({behavior:"smooth"});}
 });
 render();clock();setInterval(clock,1000);setInterval(()=>{if(running&&performance.now()-lastTick>=3000/speed){lastTick=performance.now();tick();}},150);
 if((new URLSearchParams(location.search).get('autoplay')==='1'||(new URLSearchParams(location.search).get('autoplay')!=='0'&&playbackRequested))&&!session.halted){running=true;lastTick=performance.now();tick();}

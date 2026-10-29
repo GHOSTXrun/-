@@ -57,3 +57,13 @@ build-frontend.mjs 生成无需服务器的独立文件。
 
 
 项目显示名称：NOXVIL。Logo 使用用户提供的原 PNG 文件，图像内容未修改。
+
+## 项目核心与白皮书
+
+前端新增项目定位、六角色协作流程、当前能力与规划说明，并提供白皮书在线阅读、PDF 和源文档下载。
+
+- 白皮书：WHITEPAPER.md / whitepaper.html / WHITEPAPER.pdf。
+- 版本：v0.1，2026-10-29，16 章、9 页 PDF。
+- 在线阅读：https://ghostxrun.github.io/-/whitepaper.html
+- PDF：https://ghostxrun.github.io/-/WHITEPAPER.pdf
+- 本地文件：项目文件夹内的「白皮书」。

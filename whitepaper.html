@@ -1,0 +1,159 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="google" content="notranslate"><title>NOXVIL 白皮书 · 产品与技术设计 v0.1</title><style>:root{color-scheme:dark}*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:24px}body{margin:0;background:#020604;color:#bbcdbf;font:14px/1.95 "Microsoft YaHei",Arial,sans-serif}
+.paper{max-width:1000px;margin:32px auto;border:1px solid #233a2b;background:#050c08;padding:42px 54px}.paper-brand{display:flex;align-items:center;gap:16px;color:#dceee2;letter-spacing:.12em;font:600 16px Consolas,monospace}.paper-brand img{width:72px;height:56px;object-fit:cover;object-position:center;mix-blend-mode:screen}.paper-brand small{display:block;font-size:10px;color:#5d886a;margin-top:5px;letter-spacing:.08em}
+.paper-tools{display:flex;gap:20px;flex-wrap:wrap;margin:28px 0 16px;font:11px Consolas,monospace}.paper-tools a,.paper-tools button{font:inherit;color:#45dc7a;background:none;border:0;text-decoration:none;padding:0;cursor:pointer}.paper-tools a:hover{text-decoration:underline}
+h1{font:500 38px/1.3 "Microsoft YaHei",Arial,sans-serif;color:#eef7f1;margin:30px 0 12px}h2{font-size:23px;line-height:1.5;color:#e0f0e5;margin:48px 0 16px;padding-top:20px;border-top:1px solid #233a2b;scroll-margin-top:20px;font-weight:500}h3{font-size:16px;font-weight:500;color:#91c6a0;margin:25px 0 10px}p{margin:12px 0}a{color:#63bd7e;overflow-wrap:anywhere}ul{padding-left:23px;margin:12px 0}li{padding:4px 0}blockquote{border-left:2px solid #38cc6a;margin:24px 0;padding:5px 18px;color:#91b49d;background:#0a170e}
+.paper-table{overflow:auto;margin:20px 0}table{width:100%;border-collapse:collapse;font-size:12px;line-height:1.8;text-align:left}th,td{border:1px solid #294231;padding:11px 12px;vertical-align:top}th{color:#b8ddc3;background:#0e1c12;font-weight:500}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#07120c;border:1px solid #1e3926;padding:18px 20px;font:12px/1.8 Consolas,"Microsoft YaHei",monospace;color:#8cb99a;margin:20px 0}
+.paper-toc{margin:28px 0 35px;border:1px solid #213b29;padding:18px 20px}.paper-toc>b{font:11px Consolas,monospace;color:#79a98a}.paper-toc>div{display:grid;grid-template-columns:1fr 1fr;gap:7px 22px;margin-top:12px}.paper-toc a{font-size:11px;text-decoration:none;color:#799d84}.paper-end{margin-top:40px;padding-top:15px;border-top:1px solid #233a2b;font:10px Consolas,monospace;color:#4d7159}
+@media(max-width:700px){body{font-size:13px}.paper{margin:0;border:0;padding:26px 18px}.paper-toc>div{grid-template-columns:1fr}h1{font-size:30px}h2{font-size:20px;margin-top:35px}.paper-table{margin:14px 0}th,td{padding:8px;font-size:11px}pre{padding:12px;font-size:10px}}
+@page{size:A4;margin:18mm 16mm}@media print{:root{color-scheme:light}html{scroll-behavior:auto}body{background:#fff;color:#202923;font-size:10.5pt;line-height:1.85}.paper{max-width:none;margin:0;padding:0;border:0;background:#fff}.paper-brand{color:#16291d;font-size:16pt}.paper-brand small{color:#53695a;font-size:8pt}.paper-brand img{mix-blend-mode:normal;background:#000;width:19mm;height:15mm;object-fit:cover}.paper-tools,.paper-toc{display:none}h1{font-size:28pt;color:#14241a;margin:12mm 0 5mm}h2{font-size:16pt;color:#183923;border-color:#9db9a4;margin:11mm 0 4mm;padding-top:4mm;break-after:avoid}h3{font-size:12pt;color:#245c35;break-after:avoid}p,li{orphans:3;widows:3}blockquote{color:#31553c;background:#f1f7f2;border-color:#2c8246;padding:3mm 5mm}a{color:#285e3a;text-decoration:none}table{font-size:8.2pt;line-height:1.65;table-layout:fixed}th,td{border-color:#aabeb0;padding:2.5mm;overflow-wrap:anywhere}th{background:#eef5ef;color:#23472d}tr{break-inside:avoid}.paper-table{overflow:visible;margin:5mm 0}pre{color:#2b5136;background:#f1f6f2;border-color:#b7cabc;font-size:8.5pt;line-height:1.7;padding:4mm;break-inside:avoid}.paper-end{color:#5c6d61;border-color:#aabeb0;font-size:8pt}}</style></head><body><main class="paper"><header class="paper-brand"><img src="./assets/noxvil-logo.png" alt="NOXVIL"><div>NOXVIL<small>PROJECT WHITEPAPER / PRODUCT & TECHNICAL DESIGN</small></div></header><nav class="paper-tools"><a href="./">← 返回终端</a><a href="./WHITEPAPER.pdf" download="NOXVIL白皮书.pdf">下载 PDF ↓</a><a href="./WHITEPAPER.md" download="NOXVIL白皮书.md">源文档 Markdown ↓</a><button id="print-paper">打印文档</button></nav><nav class="paper-toc"><b>CONTENTS / 目录</b><div><a href="#p01">01 / 摘要</a><a href="#p02">02 / 项目定位与要解决的问题</a><a href="#p03">03 / 核心原则</a><a href="#p04">04 / 系统架构</a><a href="#p05">05 / 六个角色及其边界</a><a href="#p06">06 / 当前两种运行模式</a><a href="#p07">07 / 信号到结算的生命周期</a><a href="#p08">08 / 成本与账本模型</a><a href="#p09">09 / 决策追踪与事件记录</a><a href="#p10">10 / 数据、权限与隐私</a><a href="#p11">11 / 能力边界与失败处理</a><a href="#p12">12 / 已实现与后续规划</a><a href="#p13">13 / 产品可持续性与代币边界</a><a href="#p14">14 / 验证标准</a><a href="#p15">15 / 结语</a><a href="#p16">16 / 参考与版本记录</a></div></nav><article><h1 id="cover">NOXVIL 白皮书</h1>
+<h2 id="version">产品与技术设计 v0.1</h2>
+<p>发布日期：2026-10-29<br>文档性质：当前实现说明与后续架构规划<br>项目入口：<a href="https://ghostxrun.github.io/-/" target="_blank" rel="noopener noreferrer">https://ghostxrun.github.io/-/</a><br>代码仓库：<a href="https://github.com/GHOSTXrun/-" target="_blank" rel="noopener noreferrer">https://github.com/GHOSTXrun/-</a></p>
+<blockquote>NOXVIL 把行情观察、风险判断、仓位管理、执行记录与资金核对连接成一条可追踪的工作流。它的核心不是展示一个余额，而是让每个动作都有依据、每个角色有边界、每个结果能够核对。</blockquote>
+<h2 id="p01">01 / 摘要</h2>
+<p>NOXVIL 是面向交易研究与策略操作的多角色协作终端。系统将一条决策拆分为六种职责：Scout 发现候选，Guard 检查条件，Sizer 分配仓位，Trigger 处理执行，Scribe 记录理由，Ledger 核对结果。操作者可以在同一个界面查看角色状态、候选队列、持仓、日志与账本。</p>
+<p>当前交付包含两个运行入口：主终端使用确定性合成行情回放，便于观察完整流程；独立行情入口适配 DEX Screener 的 Solana 聚合数据，并使用研究执行账本记录仓位、费用与价格变化。两者均未连接钱包或真实订单服务。六个角色目前由规则代码实现，不是六个独立运行的 LLM。</p>
+<p>本白皮书将已实现功能、连接条件和未来规划分别说明。界面动画、回放收益、角色名称与成交记录不能作为真实市场执行、链上安全审计或盈利能力的证明。</p>
+<h2 id="p02">02 / 项目定位与要解决的问题</h2>
+<p>聊天式交易建议通常停留在“会买什么”与“为什么看好”。实际的操作系统还需要回答：信号从哪里来，数据有多新，谁可以否决，仓位如何确定，订单是否执行，费用如何计入，结果能否重新核对。</p>
+<p>NOXVIL 的产品定位是交易工作流的操作与观察层。它把分散的判断归入明确阶段，让操作者从阅读结论转为检查过程。</p>
+<ul>
+<li>对研究者：复现一条策略链，观察过滤条件与执行成本的影响。</li>
+<li>对操作者：集中查看会话、风险参数、持仓变化与异常状态。</li>
+<li>对开发者：在明确的输入、输出和状态边界上接入行情、策略与执行适配器。</li>
+<li>对复核者：通过追踪号检索同一决策的证据与会计结果。</li>
+</ul>
+<p>“流程可检查”是当前能力；“收益可持续”需要独立验证，不能由产品界面推导。</p>
+<h2 id="p03">03 / 核心原则</h2>
+<h3 id="version">职责分离</h3>
+<p>发现机会的角色不直接提交执行，负责记账的角色不创造行情。风险检查与执行路径分开，降低一个阶段同时生成信号、放宽限制和解释结果的可能性。</p>
+<h3 id="version">依据先于动作</h3>
+<p>候选必须带有价格、数据来源和抓取时间。缺失价格、超过时效或不满足策略条件时，不产生新建仓记录。当前基础筛查不能替代合约安全验证。</p>
+<h3 id="version">一个会话，一套账本</h3>
+<p>现金、持仓成本、已实现盈亏和权益分别计算。开放持仓不提前计为已实现利润。入口不同不代表它们共享实盘资产；不同运行入口拥有各自的浏览器会话。</p>
+<h3 id="version">显示真实状态</h3>
+<p>离线、数据过期、能力缺失与风控锁定必须如实呈现。连接失败时不以合成价格冒充外部行情。</p>
+<h3 id="version">可追踪，不冒充不可篡改</h3>
+<p>追踪号用于关联事件。当前本地记录可被设备使用者修改，不具备外部签名、共识或不可篡改存证性质。</p>
+<h2 id="p04">04 / 系统架构</h2>
+<p>工作流按数据层、角色协作层、风险与执行层、账本层和展示层组织。</p>
+<pre><code>数据源 / 回放输入
+        ↓
+Scout → Guard → Sizer
+                   ↓
+                Trigger
+                   ↓
+           Scribe → Ledger
+                   ↓
+          操作者检查与导出</code></pre>
+<p>数据层提供标准化候选。角色协作层完成筛查、仓位与执行决策。账本层保留持仓、成交和资金变化。展示层读取同一会话状态，避免各面板分别生成互不一致的数字。</p>
+<p>当前实现运行在浏览器中：数据获取、规则判断、界面更新和本地保存属于同一个应用。图中的逻辑分层不代表已经部署了六个独立服务。持久化事件后台、任务队列和独立权限服务属于后续规划。</p>
+<h2 id="p05">05 / 六个角色及其边界</h2>
+<div class="paper-table"><table><thead><tr><th>角色</th><th>主要输入</th><th>输出与职责</th><th>权限边界</th></tr></thead><tbody><tr><td>Scout</td><td>交易对、聚合价格、成交量、抓取时间</td><td>标准化候选与观察事件</td><td>不直接开仓</td></tr><tr><td>Guard</td><td>候选、数据时效、策略阈值</td><td>拒绝原因或有限筛查结果</td><td>可否决；不能声称完成未接入的安全检查</td></tr><tr><td>Sizer</td><td>当前现金、分配比例、成本约束</td><td>仓位金额与成本估算</td><td>不使用隐藏杠杆，不超出可用资金</td></tr><tr><td>Trigger</td><td>获批候选、仓位、退出条件</td><td>研究执行账本中的开平仓</td><td>当前不签名、不发送链上交易</td></tr><tr><td>Scribe</td><td>信号、筛查、仓位与执行事件</td><td>时间、原因、追踪号与关联日志</td><td>不修改既有价格以解释收益</td></tr><tr><td>Ledger</td><td>成交、费用、持仓与现金</td><td>净盈亏、权益与会话核对</td><td>不把未结算收益计为已实现利润</td></tr></tbody></table></div>
+<p>独立行情入口中的 Guard 标记为 LIMITED：它只检查数据时效、流动性、成交量和近期卖出元数据，不代表已经证明某代币可以安全卖出。</p>
+<h2 id="p06">06 / 当前两种运行模式</h2>
+<h3 id="version">6.1 策略回放</h3>
+<p>主页面使用可重复的合成输入，展示候选进入、安全否决、定仓、开仓、平仓与结算。默认以 4× 节奏推进，每个阶段约 0.75 秒。这个节奏是回放展示速度，不是外部市场数据的更新频率。</p>
+<p>回放中的可卖出性、权限状态与流动性检查来自预设测试条件。它们说明流程如何响应输入，不代表对任何真实代币完成了链上检查。</p>
+<h3 id="version">6.2 行情观察与研究账本</h3>
+<p>独立入口接入 DEX Screener 的 Solana 数据适配器。观察列表来自最近收录资料及 SOL；“最近收录”不等于“刚发行”，也不构成推荐名单。默认每 15 秒请求聚合数据，提供价格、流动性、小时成交量和近期买卖笔数。</p>
+<p>抓取时间只表明应用何时收到数据，不能证明上游价格在该时刻刚刚变化，也不能保证该价格可成交。当前交付环境访问外部行情源失败，应用因此显示离线；实际可用性取决于运行网络与上游服务。</p>
+<p>研究账本根据后续观察到的价格计价，记录的是本地研究结果，不是链上订单。没有真实钱包、交易签名或托管资金。</p>
+<h2 id="p07">07 / 信号到结算的生命周期</h2>
+<h3 id="version">7.1 候选进入</h3>
+<p>Scout 标准化交易对标识、代币地址、价格、流动性、成交量、短周期变化和抓取时间。候选进入待检查状态，而不是默认进入持仓。</p>
+<h3 id="version">7.2 基础筛查</h3>
+<p>独立行情模型的默认条件包括：</p>
+<ul>
+<li>价格有效，距离应用抓取时间不超过 45 秒。</li>
+<li>报告流动性不少于 25,000 USD。</li>
+<li>过去一小时报告成交量不少于 1,000 USD。</li>
+<li>最近五分钟至少报告一笔卖出。</li>
+<li>自动策略额外要求五分钟价格变化为正。</li>
+</ul>
+<p>这些阈值是可配置研究参数，不是已验证的最佳参数。成交笔数不能替代真实卖出测试，流动性汇总值也不能替代可执行深度。</p>
+<h3 id="version">7.3 仓位分配</h3>
+<p>默认按可用现金的 10% 分配，允许范围为 1%—25%。当前模型同一时间只保留一个开放仓位。建仓成本从可用现金中扣减，不凭空增加本金。</p>
+<h3 id="version">7.4 研究执行</h3>
+<p>当前执行使用聚合价格及成本模型。进入后记录数量、成本、进入时间、交易对标识和追踪号。新的观察更新持仓计价；退出需再次获取对应交易对的有效数据。</p>
+<h3 id="version">7.5 退出与结算</h3>
+<p>独立模型的默认退出条件为净收益达到 4%、净损失达到 2%、持有时间达到 180 秒，或会话权益触及亏损限制。条件只在有有效报价且策略启用时自动处理。操作者也可通过对应入口提交研究执行操作。</p>
+<p>默认会话亏损限制为初始资金的 10%。触发后禁止新进入，直到建立新会话。跳空、数据中断和退出成本超限仍可能导致无法按阈值结算；限制不是收益或最大损失保证。</p>
+<h2 id="p08">08 / 成本与账本模型</h2>
+<p>模型区分四个量：可用现金、开放仓位成本、已实现盈亏、账户权益。</p>
+<p>设分配成本为 C，聚合价格为 P，估算冲击比例为 i，每侧费用比例为 f：</p>
+<pre><code>进入计价 = P × (1 + i)
+数量 Q = C / [进入计价 × (1 + f)]
+
+退出计价 = 后续聚合价格 × (1 - 退出冲击比例)
+退出所得 = Q × 退出计价 × (1 - f)
+已实现盈亏 = 退出所得 - C</code></pre>
+<p>当前费用模型每侧为 0.1%。冲击比例使用流动性折半形成的储备近似：</p>
+<pre><code>储备估算 R = 报告流动性 / 2
+冲击比例 i ≈ 订单名义金额 / (R + 订单名义金额)</code></pre>
+<p>这是一种简化研究模型，不是路由器报价。它不准确描述集中流动性、多跳路径、不同收费池、优先费、MEV、部分成交或链上失败成本。</p>
+<p>退出完成后，现金增加退出所得，已实现盈亏累计净变化；开放期间，权益按最后观察价格和估算退出成本计价。数据过期时仍应将其理解为旧观察下的计价。</p>
+<p>独立模型用以下关系校验保存数据：</p>
+<pre><code>可用现金 + 开放仓位成本
+  ≈ 初始资金 + 已实现盈亏
+
+已实现盈亏
+  ≈ 所有已平仓记录净盈亏之和</code></pre>
+<p>实现中使用数值容差核对浮点计算。此核对只证明本地模型内部一致，不证明对应市场成交真实发生。</p>
+<h2 id="p09">09 / 决策追踪与事件记录</h2>
+<p>每次进入流程关联一个追踪号，连接候选、筛查、定仓、开仓与退出。主要事件包含观察、发现、拒绝、有限筛查、定仓、开仓、记录、平仓、结算和停机。</p>
+<p>以下为结构示意，不是成交证明：</p>
+<pre><code>{
+  &quot;at&quot;: &quot;&lt;ISO 8601 时间&gt;&quot;,
+  &quot;trace&quot;: &quot;&lt;会话追踪号&gt;&quot;,
+  &quot;agent&quot;: &quot;Guard&quot;,
+  &quot;decision&quot;: &quot;LIMITED&quot;,
+  &quot;reason&quot;: &quot;基础行情条件通过；合约安全验证未接入&quot;,
+  &quot;mode&quot;: &quot;&lt;运行模式&gt;&quot;
+}</code></pre>
+<p>日志可以按角色或追踪号筛选。JSON 导出保留会话与事件；CSV 导出已平仓账本。记录中应保留运行模式和来源，避免将回放结果与外部行情研究结果混在一起。</p>
+<h2 id="p10">10 / 数据、权限与隐私</h2>
+<p>当前记录保存于浏览器本地存储。设备使用者可以清理或修改这些记录；浏览器关闭后应用不继续运行。界面中的“夜间运行”是产品工作流方向，不代表已经提供后台全天候托管服务。</p>
+<p>当前系统不请求助记词、私钥或钱包签名，也不托管资产。公开行情适配器不需要用户提供交易密钥。</p>
+<p>后续接入真实执行时，必须额外实现签名隔离、最小授权、订单幂等、报价有效期、确认与重试核对、独立停机和权限审计。当前版本没有这些能力，不应通过改变按钮名称来推断它们已经存在。</p>
+<h2 id="p11">11 / 能力边界与失败处理</h2>
+<ul>
+<li>行情不可用：明确显示离线，不生成替代价格冒充外部行情。</li>
+<li>数据过期：拒绝新的进入或退出计价，保留待处理持仓。</li>
+<li>基础筛查失败：记录原因，不创建仓位。</li>
+<li>成本估算超限：拒绝对应操作；开放仓位不会被静默消除。</li>
+<li>会话亏损限制触发：锁定新进入。</li>
+<li>本地保存不可用：提示导出，不假称记录已经持久化。</li>
+<li>参数修改：通过新会话应用，避免旧仓位与新规则混淆。</li>
+</ul>
+<p>任何策略都可能受数据质量、模型简化、价格跳变和执行条件影响。当前版本没有经第三方验证的盈利率、年化收益或链上安全保证。</p>
+<h2 id="p12">12 / 已实现与后续规划</h2>
+<div class="paper-table"><table><thead><tr><th>阶段</th><th>状态</th><th>内容</th></tr></thead><tbody><tr><td>原生工作台</td><td>已实现</td><td>原生右侧模板、六角色状态、事件日志、资金曲线、账本和导出</td></tr><tr><td>回放引擎</td><td>已实现</td><td>确定性输入、4× 节奏、开平仓阶段、费用和风险阈值</td></tr><tr><td>行情适配</td><td>已实现，连接依赖环境</td><td>DEX Screener 请求、标准化字段、观察列表、过期与离线处理</td></tr><tr><td>研究执行模型</td><td>已实现</td><td>可用现金分配、单一持仓、成本估算、退出条件与核对</td></tr><tr><td>全天候后台</td><td>规划中</td><td>服务端会话、任务队列、持久化事件和运行恢复</td></tr><tr><td>完整安全数据</td><td>规划中</td><td>权限、持有人与池深数据、真实卖出测试、来源交叉校验</td></tr><tr><td>策略智能层</td><td>规划中</td><td>可评估的模型输入输出、策略版本、回测与独立验收</td></tr><tr><td>真实执行适配</td><td>规划中</td><td>受限授权、签名服务、报价路由、测试网络与交易确认</td></tr></tbody></table></div>
+<p>路线图描述建设方向，不构成完成时间、合作关系、产品可用性或投资回报的承诺。</p>
+<h2 id="p13">13 / 产品可持续性与代币边界</h2>
+<p>NOXVIL 当前没有公布代币发行、合约地址、供应量、收益分配、质押或燃烧机制。原项目素材中的其他代币信息不能被视为 NOXVIL 的经济设计。</p>
+<p>未来可探索的产品模式包括工作台订阅、团队席位、研究数据接口与专用部署。这些是商业模式设想，当前没有在此承诺定价或收入。</p>
+<p>任何未来代币或资金相关安排应另行披露用途、权限、风险、归属和可核对信息，不应从当前界面图标或余额推导。</p>
+<h2 id="p14">14 / 验证标准</h2>
+<p>NOXVIL 将操作正确性与策略收益分开验证。</p>
+<ul>
+<li>页面与状态：同一会话的余额、持仓和日志保持一致。</li>
+<li>生命周期：进入前完成检查，退出后才计入已实现盈亏。</li>
+<li>风险边界：过期数据、低流动性、成本超限和亏损停机可被复现。</li>
+<li>会计核对：现金、仓位成本与历史净盈亏符合模型不变量。</li>
+<li>断网行为：外部接口失败时不创建虚假成交。</li>
+<li>导出完整性：事件与已平仓账本可按追踪号核对。</li>
+<li>展示可靠性：右侧模板直接输出到页面，初始结构不依赖单独脚本加载。</li>
+</ul>
+<p>浏览器功能验收包含隔离的接口契约测试。测试样本不属于生产行情，也不作为项目业绩。未来策略能力需要独立的样本外评估和真实执行数据验证。</p>
+<h2 id="p15">15 / 结语</h2>
+<p>NOXVIL 的目标是建立可以被检查的交易工作流：每个角色知道自己负责什么，每个动作留下可以复核的上下文，每笔结果能够回到账本。</p>
+<p>界面的价值在于让过程可见，模型的价值在于让规则可测试，执行系统的价值最终取决于真实数据、权限边界与外部核对。NOXVIL 将按这些边界逐步建设，而不以一段收益故事代替系统能力。</p>
+<h2 id="p16">16 / 参考与版本记录</h2>
+<ul>
+<li>项目与源代码：<a href="https://github.com/GHOSTXrun/-" target="_blank" rel="noopener noreferrer">https://github.com/GHOSTXrun/-</a></li>
+<li>行情接口文档：<a href="https://docs.dexscreener.com/api/reference" target="_blank" rel="noopener noreferrer">https://docs.dexscreener.com/api/reference</a></li>
+<li>当前回放实现：terminal-engine.mjs、unified.js、video-panel.js。</li>
+<li>独立行情模型：native/model.mjs、native/market.mjs、native/app.mjs。</li>
+<li>v0.1 / 2026-10-29：首版产品定位、角色架构、账本规则、能力边界与路线图。</li>
+</ul>
+<p>本文描述当前代码与设计方向，后续变化应通过版本记录更新。</p></article><footer class="paper-end">NOXVIL · v0.1 · 2026-10-29 · Product and implementation boundaries are versioned with the source.</footer></main><script>document.getElementById("print-paper").addEventListener("click",()=>window.print());</script></body></html>
