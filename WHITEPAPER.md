@@ -1,255 +1,174 @@
-# NOXVIL 白皮书
+# NOXVIL Whitepaper
 
-## 产品与技术设计 v0.1
+Product and Technical Design / Version 0.1 / October 29, 2026
 
-发布日期：2026-10-29  
-文档性质：当前实现说明与后续架构规划  
-项目入口：https://ghostxrun.github.io/-/  
-代码仓库：https://github.com/GHOSTXrun/-
+> Six specialists. One inspectable workflow. Every decision has a reason.
 
-> NOXVIL 把行情观察、风险判断、仓位管理、执行记录与资金核对连接成一条可追踪的工作流。它的核心不是展示一个余额，而是让每个动作都有依据、每个角色有边界、每个结果能够核对。
+## 01 / Executive Summary
 
-## 01 / 摘要
+NOXVIL is a collaborative terminal for trading research and strategy operations. It connects discovery, safety checks, position sizing, execution records, explanations and accounting in one inspectable workflow.
 
-NOXVIL 是面向交易研究与策略操作的多角色协作终端。系统将一条决策拆分为六种职责：Scout 发现候选，Guard 检查条件，Sizer 分配仓位，Trigger 处理执行，Scribe 记录理由，Ledger 核对结果。操作者可以在同一个界面查看角色状态、候选队列、持仓、日志与账本。
+The current release is browser-based research software. The primary workspace uses deterministic synthetic quotes and a local ledger. A separate native workspace includes a read-only market adapter and research position tracking. Neither workspace signs transactions, connects a funded wallet or submits exchange orders. The named agents are rule-based software roles, with no LLM integration.
 
-当前交付包含两个运行入口：主终端使用确定性合成行情回放，便于观察完整流程；独立行情入口适配 DEX Screener 的 Solana 聚合数据，并使用研究执行账本记录仓位、费用与价格变化。两者均未连接钱包或真实订单服务。六个角色目前由规则代码实现，不是六个独立运行的 LLM。
+## 02 / Problem and Product Thesis
 
-本白皮书将已实现功能、连接条件和未来规划分别说明。界面动画、回放收益、角色名称与成交记录不能作为真实市场执行、链上安全审计或盈利能力的证明。
+A recommendation alone does not explain how a decision became an action. NOXVIL retains the candidate, checks, parameters, action and accounting result together. Rejections are recorded with reasons.
 
-## 02 / 项目定位与要解决的问题
+The original overnight story of $33.40 growing to $13,456.22, 71 trades, 47 wins, 24 losses and 23 filtered tokens is an unverified concept scenario. It is not product performance, a backtest or an input to the current ledger. No return is promised.
 
-聊天式交易建议通常停留在“会买什么”与“为什么看好”。实际的操作系统还需要回答：信号从哪里来，数据有多新，谁可以否决，仓位如何确定，订单是否执行，费用如何计入，结果能否重新核对。
+## 03 / Product Principles
 
-NOXVIL 的产品定位是交易工作流的操作与观察层。它把分散的判断归入明确阶段，让操作者从阅读结论转为检查过程。
+- Separate observation, safety, sizing, execution records and accounting.
+- Require explicit checks before creating a position.
+- Calculate exposure from available equity and configured limits.
+- Include adverse slippage and fees in research results.
+- Link decisions through trace IDs and a shared session.
+- Distinguish implemented functions, limitations and future plans.
 
-- 对研究者：复现一条策略链，观察过滤条件与执行成本的影响。
-- 对操作者：集中查看会话、风险参数、持仓变化与异常状态。
-- 对开发者：在明确的输入、输出和状态边界上接入行情、策略与执行适配器。
-- 对复核者：通过追踪号检索同一决策的证据与会计结果。
+## 04 / System Architecture
 
-“流程可检查”是当前能力；“收益可持续”需要独立验证，不能由产品界面推导。
+The primary application combines the original terminal shell, a native right-hand dashboard, a deterministic state engine, a shared rendering controller and browser-local persistence. Shadow DOM isolates panel styling while both views consume the same session. The panel is an interactive interface rather than a screenshot or scaled iframe.
 
-## 03 / 核心原则
+Build outputs include an online page and a self-contained offline page. Static panel content appears before runtime hydration. The separate native workspace is published under /native/. Its market access, model and view are independent modules. Static hosting does not provide a persistent trading backend.
 
-### 职责分离
+    Candidate -> Guard -> Sizer -> Trigger -> Scribe -> Ledger
+                  |                             |
+               reasons                    shared trace ID
+                  +----------- session ---------+
 
-发现机会的角色不直接提交执行，负责记账的角色不创造行情。风险检查与执行路径分开，降低一个阶段同时生成信号、放宽限制和解释结果的可能性。
+## 05 / The Six Specialized Roles
 
-### 依据先于动作
-
-候选必须带有价格、数据来源和抓取时间。缺失价格、超过时效或不满足策略条件时，不产生新建仓记录。当前基础筛查不能替代合约安全验证。
-
-### 一个会话，一套账本
-
-现金、持仓成本、已实现盈亏和权益分别计算。开放持仓不提前计为已实现利润。入口不同不代表它们共享实盘资产；不同运行入口拥有各自的浏览器会话。
-
-### 显示真实状态
-
-离线、数据过期、能力缺失与风控锁定必须如实呈现。连接失败时不以合成价格冒充外部行情。
-
-### 可追踪，不冒充不可篡改
-
-追踪号用于关联事件。当前本地记录可被设备使用者修改，不具备外部签名、共识或不可篡改存证性质。
-
-## 04 / 系统架构
-
-工作流按数据层、角色协作层、风险与执行层、账本层和展示层组织。
-
-    数据源 / 回放输入
-            ↓
-    Scout → Guard → Sizer
-                       ↓
-                    Trigger
-                       ↓
-               Scribe → Ledger
-                       ↓
-              操作者检查与导出
-
-数据层提供标准化候选。角色协作层完成筛查、仓位与执行决策。账本层保留持仓、成交和资金变化。展示层读取同一会话状态，避免各面板分别生成互不一致的数字。
-
-当前实现运行在浏览器中：数据获取、规则判断、界面更新和本地保存属于同一个应用。图中的逻辑分层不代表已经部署了六个独立服务。持久化事件后台、任务队列和独立权限服务属于后续规划。
-
-## 05 / 六个角色及其边界
-
-| 角色 | 主要输入 | 输出与职责 | 权限边界 |
-| --- | --- | --- | --- |
-| Scout | 交易对、聚合价格、成交量、抓取时间 | 标准化候选与观察事件 | 不直接开仓 |
-| Guard | 候选、数据时效、策略阈值 | 拒绝原因或有限筛查结果 | 可否决；不能声称完成未接入的安全检查 |
-| Sizer | 当前现金、分配比例、成本约束 | 仓位金额与成本估算 | 不使用隐藏杠杆，不超出可用资金 |
-| Trigger | 获批候选、仓位、退出条件 | 研究执行账本中的开平仓 | 当前不签名、不发送链上交易 |
-| Scribe | 信号、筛查、仓位与执行事件 | 时间、原因、追踪号与关联日志 | 不修改既有价格以解释收益 |
-| Ledger | 成交、费用、持仓与现金 | 净盈亏、权益与会话核对 | 不把未结算收益计为已实现利润 |
-
-独立行情入口中的 Guard 标记为 LIMITED：它只检查数据时效、流动性、成交量和近期卖出元数据，不代表已经证明某代币可以安全卖出。
-
-## 06 / 当前两种运行模式
-
-### 6.1 策略回放
-
-主页面使用可重复的合成输入，展示候选进入、安全否决、定仓、开仓、平仓与结算。默认以 4× 节奏推进，每个阶段约 0.75 秒。这个节奏是回放展示速度，不是外部市场数据的更新频率。
-
-回放中的可卖出性、权限状态与流动性检查来自预设测试条件。它们说明流程如何响应输入，不代表对任何真实代币完成了链上检查。
-
-### 6.2 行情观察与研究账本
-
-独立入口接入 DEX Screener 的 Solana 数据适配器。观察列表来自最近收录资料及 SOL；“最近收录”不等于“刚发行”，也不构成推荐名单。默认每 15 秒请求聚合数据，提供价格、流动性、小时成交量和近期买卖笔数。
-
-抓取时间只表明应用何时收到数据，不能证明上游价格在该时刻刚刚变化，也不能保证该价格可成交。当前交付环境访问外部行情源失败，应用因此显示离线；实际可用性取决于运行网络与上游服务。
-
-研究账本根据后续观察到的价格计价，记录的是本地研究结果，不是链上订单。没有真实钱包、交易签名或托管资金。
-
-## 07 / 信号到结算的生命周期
-
-### 7.1 候选进入
-
-Scout 标准化交易对标识、代币地址、价格、流动性、成交量、短周期变化和抓取时间。候选进入待检查状态，而不是默认进入持仓。
-
-### 7.2 基础筛查
-
-独立行情模型的默认条件包括：
-
-- 价格有效，距离应用抓取时间不超过 45 秒。
-- 报告流动性不少于 25,000 USD。
-- 过去一小时报告成交量不少于 1,000 USD。
-- 最近五分钟至少报告一笔卖出。
-- 自动策略额外要求五分钟价格变化为正。
-
-这些阈值是可配置研究参数，不是已验证的最佳参数。成交笔数不能替代真实卖出测试，流动性汇总值也不能替代可执行深度。
-
-### 7.3 仓位分配
-
-默认按可用现金的 10% 分配，允许范围为 1%—25%。当前模型同一时间只保留一个开放仓位。建仓成本从可用现金中扣减，不凭空增加本金。
-
-### 7.4 研究执行
-
-当前执行使用聚合价格及成本模型。进入后记录数量、成本、进入时间、交易对标识和追踪号。新的观察更新持仓计价；退出需再次获取对应交易对的有效数据。
-
-### 7.5 退出与结算
-
-独立模型的默认退出条件为净收益达到 4%、净损失达到 2%、持有时间达到 180 秒，或会话权益触及亏损限制。条件只在有有效报价且策略启用时自动处理。操作者也可通过对应入口提交研究执行操作。
-
-默认会话亏损限制为初始资金的 10%。触发后禁止新进入，直到建立新会话。跳空、数据中断和退出成本超限仍可能导致无法按阈值结算；限制不是收益或最大损失保证。
-
-## 08 / 成本与账本模型
-
-模型区分四个量：可用现金、开放仓位成本、已实现盈亏、账户权益。
-
-设分配成本为 C，聚合价格为 P，估算冲击比例为 i，每侧费用比例为 f：
-
-    进入计价 = P × (1 + i)
-    数量 Q = C / [进入计价 × (1 + f)]
-
-    退出计价 = 后续聚合价格 × (1 - 退出冲击比例)
-    退出所得 = Q × 退出计价 × (1 - f)
-    已实现盈亏 = 退出所得 - C
-
-当前费用模型每侧为 0.1%。冲击比例使用流动性折半形成的储备近似：
-
-    储备估算 R = 报告流动性 / 2
-    冲击比例 i ≈ 订单名义金额 / (R + 订单名义金额)
-
-这是一种简化研究模型，不是路由器报价。它不准确描述集中流动性、多跳路径、不同收费池、优先费、MEV、部分成交或链上失败成本。
-
-退出完成后，现金增加退出所得，已实现盈亏累计净变化；开放期间，权益按最后观察价格和估算退出成本计价。数据过期时仍应将其理解为旧观察下的计价。
-
-独立模型用以下关系校验保存数据：
-
-    可用现金 + 开放仓位成本
-      ≈ 初始资金 + 已实现盈亏
-
-    已实现盈亏
-      ≈ 所有已平仓记录净盈亏之和
-
-实现中使用数值容差核对浮点计算。此核对只证明本地模型内部一致，不证明对应市场成交真实发生。
-
-## 09 / 决策追踪与事件记录
-
-每次进入流程关联一个追踪号，连接候选、筛查、定仓、开仓与退出。主要事件包含观察、发现、拒绝、有限筛查、定仓、开仓、记录、平仓、结算和停机。
-
-以下为结构示意，不是成交证明：
-
-    {
-      "at": "<ISO 8601 时间>",
-      "trace": "<会话追踪号>",
-      "agent": "Guard",
-      "decision": "LIMITED",
-      "reason": "基础行情条件通过；合约安全验证未接入",
-      "mode": "<运行模式>"
-    }
-
-日志可以按角色或追踪号筛选。JSON 导出保留会话与事件；CSV 导出已平仓账本。记录中应保留运行模式和来源，避免将回放结果与外部行情研究结果混在一起。
-
-## 10 / 数据、权限与隐私
-
-当前记录保存于浏览器本地存储。设备使用者可以清理或修改这些记录；浏览器关闭后应用不继续运行。界面中的“夜间运行”是产品工作流方向，不代表已经提供后台全天候托管服务。
-
-当前系统不请求助记词、私钥或钱包签名，也不托管资产。公开行情适配器不需要用户提供交易密钥。
-
-后续接入真实执行时，必须额外实现签名隔离、最小授权、订单幂等、报价有效期、确认与重试核对、独立停机和权限审计。当前版本没有这些能力，不应通过改变按钮名称来推断它们已经存在。
-
-## 11 / 能力边界与失败处理
-
-- 行情不可用：明确显示离线，不生成替代价格冒充外部行情。
-- 数据过期：拒绝新的进入或退出计价，保留待处理持仓。
-- 基础筛查失败：记录原因，不创建仓位。
-- 成本估算超限：拒绝对应操作；开放仓位不会被静默消除。
-- 会话亏损限制触发：锁定新进入。
-- 本地保存不可用：提示导出，不假称记录已经持久化。
-- 参数修改：通过新会话应用，避免旧仓位与新规则混淆。
-
-任何策略都可能受数据质量、模型简化、价格跳变和执行条件影响。当前版本没有经第三方验证的盈利率、年化收益或链上安全保证。
-
-## 12 / 已实现与后续规划
-
-| 阶段 | 状态 | 内容 |
+| Role | Responsibility | Boundary |
 | --- | --- | --- |
-| 原生工作台 | 已实现 | 原生右侧模板、六角色状态、事件日志、资金曲线、账本和导出 |
-| 回放引擎 | 已实现 | 确定性输入、4× 节奏、开平仓阶段、费用和风险阈值 |
-| 行情适配 | 已实现，连接依赖环境 | DEX Screener 请求、标准化字段、观察列表、过期与离线处理 |
-| 研究执行模型 | 已实现 | 可用现金分配、单一持仓、成本估算、退出条件与核对 |
-| 全天候后台 | 规划中 | 服务端会话、任务队列、持久化事件和运行恢复 |
-| 完整安全数据 | 规划中 | 权限、持有人与池深数据、真实卖出测试、来源交叉校验 |
-| 策略智能层 | 规划中 | 可评估的模型输入输出、策略版本、回测与独立验收 |
-| 真实执行适配 | 规划中 | 受限授权、签名服务、报价路由、测试网络与交易确认 |
+| Scout | Discover pairs and volume candidates. | Does not execute trades. |
+| Guard | Check eligibility and reject failures with reasons. | A pass is not a comprehensive token audit. |
+| Sizer | Calculate exposure from equity and allocation policy. | Cannot create funds or bypass limits. |
+| Trigger | Record research entries and exits. | No signing or real order submission. |
+| Scribe | Preserve explanations under a trace ID. | Local records are not independently attested. |
+| Ledger | Reconcile settlement, cash and equity. | Research balances are not custody balances. |
 
-路线图描述建设方向，不构成完成时间、合作关系、产品可用性或投资回报的承诺。
+The operator reviews policy, interprets data quality and exports records. Role names describe responsibilities, not independent intelligence or security assurance.
 
-## 13 / 产品可持续性与代币边界
+## 06 / Data and Operating Modes
 
-NOXVIL 当前没有公布代币发行、合约地址、供应量、收益分配、质押或燃烧机制。原项目素材中的其他代币信息不能被视为 NOXVIL 的经济设计。
+The primary workspace uses deterministic synthetic fixtures. They reproduce discovery, rejection, sizing, entry, exit and settlement without a funded account. They are not live prices.
 
-未来可探索的产品模式包括工作台订阅、团队席位、研究数据接口与专用部署。这些是商业模式设想，当前没有在此承诺定价或收入。
+The independent workspace contains a read-only DEX Screener adapter. Access depends on upstream availability, the network and browser or proxy configuration. Failed access produces a data-state message, without fabricated live-price fallback. Market connectivity was unavailable in the validation environment.
 
-任何未来代币或资金相关安排应另行披露用途、权限、风险、归属和可核对信息，不应从当前界面图标或余额推导。
+Published prices and observed liquidity do not guarantee executable fills. Available market checks do not constitute complete contract analysis or a honeypot audit.
 
-## 14 / 验证标准
+## 07 / Decision Lifecycle
 
-NOXVIL 将操作正确性与策略收益分开验证。
+Scout proposes a candidate. Guard records a pass or rejection. Rejections leave a trace without increasing the trade count. Sizer determines allocation for an eligible candidate. Trigger records an entry and an open position, followed by a later close. Scribe preserves reasons, and Ledger reconciles the settled result.
 
-- 页面与状态：同一会话的余额、持仓和日志保持一致。
-- 生命周期：进入前完成检查，退出后才计入已实现盈亏。
-- 风险边界：过期数据、低流动性、成本超限和亏损停机可被复现。
-- 会计核对：现金、仓位成本与历史净盈亏符合模型不变量。
-- 断网行为：外部接口失败时不创建虚假成交。
-- 导出完整性：事件与已平仓账本可按追踪号核对。
-- 展示可靠性：右侧模板直接输出到页面，初始结构不依赖单独脚本加载。
+The primary engine intentionally exposes the open state before settlement. The independent research engine monitors configured exits when data is available. Closing the browser stops browser execution; no continuously running overnight backend is included.
 
-浏览器功能验收包含隔离的接口契约测试。测试样本不属于生产行情，也不作为项目业绩。未来策略能力需要独立的样本外评估和真实执行数据验证。
+## 08 / Risk Policy and Defaults
 
-## 15 / 结语
+These are independent research workspace defaults, not proven trading recommendations. The primary deterministic workspace has its own fixture checks.
 
-NOXVIL 的目标是建立可以被检查的交易工作流：每个角色知道自己负责什么，每个动作留下可以复核的上下文，每笔结果能够回到账本。
+| Parameter | Default or boundary |
+| --- | --- |
+| Initial research equity | $33.40 |
+| Minimum observed liquidity | $25,000 |
+| Minimum one-hour volume | $1,000 |
+| Selling activity | Recent sells required by available-data checks |
+| Maximum fetched-data age | 45 seconds |
+| Allocation | 10% of available equity; configurable from 1% to 25% |
+| Slippage or indicative impact cap | 1.5% |
+| Modeled fee | 0.1% per side |
+| Take-profit threshold | 4% |
+| Stop-loss threshold | 2% |
+| Maximum holding time | 180 seconds |
+| Session loss stop | 10% |
 
-界面的价值在于让过程可见，模型的价值在于让规则可测试，执行系统的价值最终取决于真实数据、权限边界与外部核对。NOXVIL 将按这些边界逐步建设，而不以一段收益故事代替系统能力。
+Liquidity and volume can be misleading or manipulated. Research exit thresholds do not guarantee achievable exit prices. Production operation requires additional market, contract, custody and execution controls.
 
-## 16 / 参考与版本记录
+## 09 / Costs and Ledger Invariants
 
-- 项目与源代码：https://github.com/GHOSTXrun/-
-- 行情接口文档：https://docs.dexscreener.com/api/reference
-- 当前回放实现：terminal-engine.mjs、unified.js、video-panel.js。
-- 独立行情模型：native/model.mjs、native/market.mjs、native/app.mjs。
-- v0.1 / 2026-10-29：首版产品定位、角色架构、账本规则、能力边界与路线图。
+Research accounting includes configured adverse slippage and per-side fees. A simplified long-position model is:
 
-本文描述当前代码与设计方向，后续变化应通过版本记录更新。
+    entryFill = observedEntry * (1 + entrySlippage)
+    quantity = allocatedCash / (entryFill * (1 + entryFee))
+    exitFill = observedExit * (1 - exitSlippage)
+    netProceeds = quantity * exitFill * (1 - exitFee)
+    realizedPnL = netProceeds - allocatedCash
+    settledEquity = initialEquity + sum(realizedPnL)
 
+Exact arithmetic and rounding follow the relevant engine. The two workspaces have separate session stores and accounting models; their results are not a single verified performance series.
+
+Only closed trades affect realized P&L. Rejections and open positions do not count as realized gains. Available cash deducts committed position costs. Mark-to-market equity, settled balance and spendable wallet funds are distinct concepts.
+
+Core invariants cover finite nonnegative balances, valid configurations, position transitions and reconciliation of initial equity plus realized results. The curve represents recorded research settlement points.
+
+## 10 / Records and Persistence
+
+Trace IDs connect candidate checks, sizing, execution and settlement. The interface supports role filters, trace inspection, JSON session exports and CSV trade exports.
+
+Sessions use browser-local storage. Records and pending research positions can be restored after refresh, but storage can be unavailable, cleared or manually edited. Records are not signed, tamper-proof or independently audited. Export important records regularly.
+
+The default primary cadence is 4x, approximately 0.75 seconds per workflow step. This is a replay presentation setting, not market latency or trading throughput. Saved preferences can change later visits.
+
+## 11 / Security and Operational Boundaries
+
+The release does not custody assets, request seed phrases, sign transactions or submit orders. No LLM credentials or autonomous model execution are part of the current engine.
+
+Production extensions would require isolated signing, permission limits, idempotent submission, transaction confirmation, reconciliation, duplicate-order protection, exposure limits, emergency controls and monitored recovery. External data requires freshness checks, validation and explicit failure handling.
+
+Local research balances are not proof of funds, real execution or investment performance.
+
+## 12 / Roadmap
+
+### Implemented
+
+- Original terminal presentation and native dashboard.
+- Six rule-based roles and a shared research session.
+- Visible entry and settlement stages with configurable limits.
+- Persistence, trace inspection and exports.
+- Independent read-only market adapter and research ledger.
+
+### Research and Evaluation
+
+Improve data resilience, safety evidence, historical datasets and evaluation baselines. Assess future strategy intelligence independently from interface animation and ledger mechanics.
+
+### Persistent Services
+
+Develop monitored backend operation with durable records, scheduling, recovery and observability. Browser operation must not be confused with persistent services.
+
+### Constrained Execution
+
+Explore permission-limited execution only after signing isolation, reconciliation, risk controls and failure recovery are implemented and reviewed. These capabilities are future work, without a guaranteed delivery date.
+
+## 13 / Token and Ecosystem Position
+
+This release defines no issued token, allocation schedule, fundraising arrangement, staking program, yield entitlement or revenue distribution. CA: TBA is an address placeholder, not confirmation that a contract exists or will be deployed.
+
+GitHub is the source reference. A social button without a configured account is a reserved entry. Any future token proposal requires separate verifiable documentation.
+
+## 14 / Validation
+
+Checks focus on sizing limits, visible open-to-close transitions, costs, ledger reconciliation, filters, exports, persistence and responsive layouts. Browser checks confirm shared state, native panel rendering and usable layouts. Document checks cover HTML and PDF delivery.
+
+Passing software checks does not establish profitability, token safety or production trading readiness. Data availability and execution require separate evidence.
+
+## 15 / Limitations
+
+- Synthetic quotes cannot establish a strategy edge.
+- Indicative market data does not guarantee executable liquidity.
+- Closing the browser stops execution.
+- Local records can be changed or lost.
+- Partial checks cannot certify token safety.
+- Modeled fees do not include every real-world cost, network fee or execution effect.
+- Research results are not offers, guarantees or forecasts.
+
+NOXVIL makes the decision chain inspectable. It does not eliminate market risk or replace a tested production trading system.
+
+## 16 / Sources and Version History
+
+Project source: https://github.com/GHOSTXrun/-
+
+Project workspace: https://ghostxrun.github.io/-/
+
+Market adapter reference: https://docs.dexscreener.com/api/reference
+
+Version 0.1 / October 29, 2026 documents the current terminal, rules, research modes, accounting, boundaries and roadmap. This English edition accompanies the English frontend. Future implementation changes should update this document and remain traceable in the repository.
