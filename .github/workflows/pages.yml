@@ -22,12 +22,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Build standalone frontend
+        run: node build-frontend.mjs
       - uses: actions/configure-pages@v5
         with:
           enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: dist
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4

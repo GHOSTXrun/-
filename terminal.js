@@ -10,7 +10,7 @@ function toast(text){const el=$('.nj-toast');el.textContent=text;el.hidden=false
 try{const raw=localStorage.getItem(key);if(raw){const s=JSON.parse(raw);settings(s.config);if(s.version!==1||!Array.isArray(s.logs)||!Array.isArray(s.trades)||!Number.isFinite(s.balance)||s.balance<0||!Number.isInteger(s.cursor)||!Number.isInteger(s.filtered))throw Error('Invalid session');const reconciled=Math.round((s.config.initial+s.trades.reduce((sum,t)=>sum+t.pnl,0))*100);if(reconciled!==Math.round(s.balance*100))throw Error('Unreconciled session');session=s;}}catch{toast('Saved session unavailable. A fresh paper session is ready.');}
 function save(){try{localStorage.setItem(key,JSON.stringify(session));storageOK=true;}catch{storageOK=false;toast('Browser storage unavailable. Export your session to retain the audit trail.');}}
 function route(){
- const name=location.hash.slice(1)||'live',valid=$$('[data-view]').some(v=>v.dataset.view===name),next=valid?name:'live';
+ const name=location.hash.slice(1)||'desk',valid=$$('[data-view]').some(v=>v.dataset.view===name),next=valid?name:'desk';
  $$('[data-view]').forEach(v=>v.classList.toggle('is-active',v.dataset.view===next));
  $$('[data-route]').forEach(v=>{v.classList.toggle('active',v.dataset.route===next);if(v.dataset.route===next)v.setAttribute('aria-current','page');else v.removeAttribute('aria-current');});
  $('#landingDetail').hidden=next!=='live';document.body.dataset.route=next;
