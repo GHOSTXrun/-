@@ -1,99 +1,73 @@
-# Cellumo
+# Nightjar Terminal
 
-Cellumo is an operational code-improvement network. Operators publish deterministic optimization tasks, machines claim them, and Docker-isolated workers test and benchmark unified patches. A mutation becomes canonical only after two machines other than the author reproduce both baseline and candidate metrics within 5% drift.
+在原 Cellumo 模板上改造的六代理交易终端，保留黑底荧光绿、字体、核心动画和工作站面板。
 
-## Start the core
+核心表达：不再只问 AI 会买什么，而是查看系统做了什么，以及为什么这样做。
 
-```bash
-npm start
-```
+## 当前交付
 
-Open `http://127.0.0.1:4210`. State is persisted atomically in `data/state.json` and is never exposed by the static server.
+这是浏览器本地 Paper 模拟终端。六个角色由确定性代码模拟，尚未接入 LLM、真实行情、钱包、DEX 或实盘订单。
 
-## Production deployment
+| 页面 | 内容 |
+| --- | --- |
+| Terminal | 资金、成交数、过滤数、会话状态、代理进程、最新决策 |
+| Agents | 六个角色的职责、权限、最新事件 |
+| Decisions | 按代理筛选，按 trace 追溯完整决策 |
+| Ledger | 初始与当前资金、净盈亏、胜负记录、逐笔账本 |
+| Session | 初始资金、仓位比例、滑点上限、亏损停机设置 |
+| Manual | 流程、边界、运行方式及实盘接入要求 |
 
-```bash
-copy .env.example .env
-# replace both secrets in .env
-docker compose up -d --build
-```
+## 六个代理
 
-The Compose port binds to localhost. Put Caddy, Nginx or Cloudflare Tunnel in front of it for TLS and the public domain. In production, `CELLUMO_ADMIN_TOKEN` protects task publication and `CELLUMO_REGISTRATION_KEY` controls worker enrollment.
+| 代理 | 职责 | 权限边界 |
+| --- | --- | --- |
+| Scout | 发现交易对、成交量异动和候选信号 | 不下单 |
+| Guard | 可卖出性、代币控制权、流动性、报价时效检查 | 可以否决；未通过不建仓 |
+| Sizer | 按当前余额计算仓位 | 1–25% 分配，不使用杠杆 |
+| Trigger | 根据获批候选模拟开平仓 | 每侧滑点上限最高 1.5%，超限拒绝 |
+| Scribe | 记录依据、结果和关联关系 | 时间、角色、原因、trace ID |
+| Ledger | 平仓后更新已结算余额 | 净盈亏核对、亏损限额停机 |
 
-## Worker requirements
+原始想法有五个名称，因此补充独立 Guard，将安全检查从执行职责中拆出。
 
-- Node.js 20+
-- Git
-- Docker
+## 可操作功能
 
-Docker jobs run with no network, dropped Linux capabilities, `no-new-privileges`, PID, CPU and memory limits, and a temporary repository checkout.
+默认 $33.40 模拟资金，每三秒推进一个合成行情候选。成功执行时一次模拟完整开平仓，无持续开放持仓。两侧分别计入不利滑点和 0.1% 手续费，平仓后更新净盈亏。仓位按当前余额重新计算；达到会话亏损限额后停止。
 
-```bash
-node worker.mjs doctor
-node worker.mjs register --name oxide-01 --target rust --cpu 8 --memory 16 --registration-key YOUR_KEY
-node worker.mjs start
-```
+支持开始/暂停、参数设置、决策筛选、账本定位 trace、完整会话 JSON 导出和交易 CSV 导出。浏览器本地保存；刷新以暂停状态恢复。关闭页面不继续运行，后台计时可能被浏览器限流。导出文件可避免本地存储清理导致记录丢失。
 
-The generated `.cellumo-worker.json` contains the bearer credential and must not be committed.
+## 隔夜故事
 
+23:00 从 $33.40 到 07:00 的 $13,456.22；71 笔交易、47 盈、24 亏、23 个币种被过滤。这些用户提供的数字作为未验证概念场景保存在手册中，不作为已验证业绩、收益预测或真实模拟账本。没有伪造 71 笔交易支撑该叙事。
 
-## Initial verifier fleet
+## 启动与验证
 
-Four independently credentialed verifier agents are included for local operation:
+需要 Node.js 20+，无第三方依赖。
 
-```bash
-node fleet.mjs bootstrap
-node fleet.mjs start
-node fleet.mjs status
-node fleet.mjs stop
-```
+    npm start
 
-`helix-01`, `vector-02`, `kiln-03`, and `cobalt-04` send real heartbeats and automatically reproduce queued mutations in Docker. Their credentials, logs, and PID records are excluded from Git.
-## Publish and execute a task
+打开 http://127.0.0.1:4210 。在 Session 设置参数，开始 Paper Session，然后查看 Agents、Decisions、Ledger。快捷键 0–5 对应六个页面。新建会话前请先导出旧日志。
 
-Copy `task.example.json`, set the real repository, immutable commit, container image, test command, benchmark command and metric. The benchmark command must print either a number or `{"metric": 12.34}` on its final stdout line.
+    npm run check
+    npm test
 
-```bash
-node worker.mjs publish task.json --admin YOUR_ADMIN_TOKEN
-node worker.mjs tasks
-node worker.mjs claim task_xxx
-node worker.mjs evaluate task_xxx --patch change.patch --summary "Reduce allocator contention"
-```
+包含原项目回归测试和新增模拟引擎测试：安全否决、陈旧报价、滑点、动态仓位、双边费用、净盈亏核对、亏损停机。
 
-Two other workers independently fetch the stored patch and rerun the baseline and candidate:
+## 模板与兼容
 
-```bash
-node worker.mjs verify mutation_xxx
-```
+原 styles.css 未改动；terminal.css 只适配新内容。保留原路由 hash、图标和 CNAME。旧 GitHub 观察、代币购买和燃烧激活脚本不再由页面加载。
 
-## Trust rules
+沿用 GitHub Pages 工作流。Pages 支持静态 Paper 前端，不会在关闭浏览器后执行夜间交易。
 
-- The patch SHA-256 must match its submitted content.
-- The author cannot verify its own mutation.
-- A verifier can vote only once.
-- Tests must pass inside the declared container.
-- Baseline and candidate measurements must both remain within 5% of the claim.
-- Two passing independent replays are required for acceptance.
-- Failed verification reopens the task; accepted mutations are appended to Lineage.
+原 Node Core、worker、fleet 文件保留为兼容存档，其 API 仍属于旧代码验证业务，不是交易后台。新终端不调用这些 API，不应将旧 worker 当成交易代理。
 
-## API
+## 实盘阶段仍需实现
 
-- `GET /api/health`, `/api/state`, `/api/tasks`, `/api/events`
-- `POST /api/tasks` (admin)
-- `POST /api/tasks/:id/claim` (machine)
-- `POST /api/machines/register`, `/api/machines/heartbeat`
-- `POST /api/mutations`, `GET /api/mutations/:id`
-- `POST /api/mutations/:id/verify`
+- 选择链、DEX/交易所、行情与安全数据供应商。
+- 持久化后台和任务队列，保证夜间运行。
+- 隔离的签名服务、授权边界、人工紧急停机。
+- 报价有效期、订单幂等、链上确认和失败重试。
+- 真实持仓、手续费、部分成交、账本核对。
+- 独立风控、日亏损、总体敞口与持仓限制。
+- 只读观察 → 测试网 → 小额受限实盘。
 
-## Verification
-
-```bash
-npm run check
-npm test
-```
-
-The $CELLUMO mint and Pump.fun market are live. The token has 0% transfer tax, with mint and freeze authorities revoked. Treasury is published at `BMWnpwFDM5q8zCz4vaAvSj55JWxNhTPaG8ooNdAyTPJM` and public Agent activation is set to burn 10,000 $CELLUMO. The public burn-verification service remains locked until the production Core is deployed.
-
-## Token loop
-
-Public Agent activation burns $CELLUMO. Pump.fun creator rewards route 80% to the compute reserve and 20% to the verified-Agent epoch pool. The CA, treasury and 10,000 $CELLUMO Agent burn are published. Public activation remains locked until burn proofs can be verified by the production Core. See [TOKENOMICS.md](./TOKENOMICS.md).

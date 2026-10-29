@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import {createSession,step,fixture,settings,validateCandidate} from './terminal-engine.mjs';
+assert.throws(()=>settings({slippage:1.6}));
+assert.throws(()=>settings({allocation:NaN}));
+let s=createSession(),bad={...fixture(0),sellable:false};
+s=step(s,bad);assert.equal(s.filtered,1);assert.equal(s.trades.length,0);assert.equal(s.balance,33.4);
+assert.equal(validateCandidate({...fixture(0),age:31}),'stale quote');
+assert.equal(validateCandidate({...fixture(0),slippage:1.51}),'slippage cap exceeded');
+assert.equal(validateCandidate({...fixture(0),controlsRevoked:false}),'token controls unverified');
+s=step(s,fixture(0));assert.equal(s.trades.length,1);assert.equal(s.trades[0].size,3.34);
+assert.equal(s.balance,Math.round((33.4+s.trades[0].pnl)*100)/100);
+assert(s.trades[0].pnl<3.34*.035,'Fees and slippage must reduce gross return');
+let loss=createSession({initial:100,allocation:25,lossLimit:1});
+loss=step(loss,{...fixture(0),exit:.5});assert.equal(loss.halted,true);assert.deepEqual(step(loss),loss);
+let replay=createSession();for(let i=0;i<100;i++)replay=step(replay);
+assert.equal(Math.round((33.4+replay.trades.reduce((n,t)=>n+t.pnl,0))*100),Math.round(replay.balance*100));
+console.log('PASS: guard veto, quote age, slippage cap, sizing, net accounting, loss halt and replay reconciliation');
