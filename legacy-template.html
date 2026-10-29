@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="google" content="notranslate"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#000000"><link rel="icon" type="image/png" href="./assets/noxvil-logo.png"><link rel="shortcut icon" href="./assets/noxvil-logo.png"><title>NOXVIL — Inspectable Trading Workflow</title><meta name="description" content="NOXVIL 用六个职责明确的角色连接行情观察、风险判断、仓位、执行记录与资金核对，让每次交易决策都能回到它的依据。"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter+Tight:wght@500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="./styles.css?v=agents33"><link rel="stylesheet" href="./integration.css"></head>
 <body><div class="noise" aria-hidden="true"></div>
-<header class="topbar"><a class="brand" href="#top" aria-label="NOXVIL home"><span class="brand-logo"><img src="./assets/noxvil-logo.png" alt=""></span><span>NOXVIL</span></a><nav><a class="active" href="#top"><b>00</b> terminal</a><a href="#agents"><b>01</b> agents</a><a href="#decisions"><b>02</b> decisions</a><a href="#ledger"><b>03</b> ledger</a><a href="#risk"><b>04</b> session</a><a href="#manual"><b>05</b> manual</a><a href="#whitepaper"><b>06</b> whitepaper</a></nav><div class="header-actions"><span class="ca">CA: TBA</span><a href="#risk">风控配置</a><button type="button" data-action="toggle">启动终端</button></div></header>
+<header class="topbar"><a class="brand" href="#top" aria-label="NOXVIL home"><span class="brand-logo"><img src="./assets/noxvil-logo.png" alt=""></span><span>NOXVIL</span></a><nav><a class="active" href="#top"><b>00</b> terminal</a><a href="#agents"><b>01</b> agents</a><a href="#decisions"><b>02</b> decisions</a><a href="#ledger"><b>03</b> ledger</a><a href="#risk"><b>04</b> session</a><a href="#manual"><b>05</b> manual</a><a href="#whitepaper"><b>06</b> whitepaper</a></nav><div class="header-actions"><a href="#risk">风控配置</a><button type="button" data-action="toggle">启动终端</button></div></header>
 <main id="top" class="cell-live app-view is-active" data-view="live">
   <section class="cell-intro cell-pane">
     <div class="cell-command"><span>~/noxvil</span><i>›</i><b>noxvil session --paper</b></div>
@@ -16,7 +16,7 @@
   <section class="cell-screen cell-pane">
     <header><span><i></i><b>‹</b>&nbsp; 1/1 &nbsp;<b>›</b>&nbsp; session</span><em>REPLAY EXECUTION</em></header>
 <div class="screen-stage video-panel-stage" id="execution"><div class="video-panel-toolbar"><span>NOXVIL / 原生面板</span><span>同一回放会话 · 区域内滚动</span></div><div class="video-panel-viewport"><div id="video-panel-host"></div></div></div>
-    <footer><span>machine</span><i>›</i><b>execution adapter offline</b><em>frame —</em></footer>
+    
   </section>
 <section class="cell-process cell-pane" id="agents"><div class="process-meta"><pre>SCOUT → GUARD → SIZER
 TRIGGER → SCRIBE → LEDGER
