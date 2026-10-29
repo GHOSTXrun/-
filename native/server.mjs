@@ -3,8 +3,8 @@ import {readFile} from 'node:fs/promises';
 import {dirname,join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 const root=dirname(fileURLToPath(import.meta.url)),port=Number(process.env.PORT||4310),cache=new Map();
-const publicFiles=new Set(['index.html','styles.css','native.css','app.mjs','view.mjs','market.mjs','model.mjs','打开独立终端.html']);
-const types={html:'text/html; charset=utf-8',css:'text/css; charset=utf-8',mjs:'text/javascript; charset=utf-8'};
+const publicFiles=new Set(['index.html','styles.css','native.css','app.mjs','view.mjs','market.mjs','model.mjs','打开独立终端.html','assets/noxvil-logo.png']);
+const types={html:'text/html; charset=utf-8',css:'text/css; charset=utf-8',mjs:'text/javascript; charset=utf-8',png:'image/png'};
 createServer(async(req,res)=>{
  const reply=(status,body,type='application/json; charset=utf-8')=>{res.writeHead(status,{'content-type':type,'cache-control':'no-store','x-content-type-options':'nosniff'});res.end(body);};
  try{
@@ -20,5 +20,5 @@ createServer(async(req,res)=>{
   const file=path==='/'?'index.html':path.slice(1);if(!publicFiles.has(file)){reply(404,JSON.stringify({error:'Not found'}));return;}
   reply(200,await readFile(join(root,file)),types[file.split('.').at(-1)]||'application/octet-stream');
  }catch(error){reply(502,JSON.stringify({error:'Market connection unavailable',detail:error.message}));}
-}).listen(port,'127.0.0.1',()=>console.log('Nightjar native terminal: http://127.0.0.1:'+port));
+}).listen(port,'127.0.0.1',()=>console.log('NOXVIL native terminal: http://127.0.0.1:'+port));
 

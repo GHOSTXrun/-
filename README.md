@@ -1,4 +1,4 @@
-# Nightjar Terminal / 单页工作台
+# NOXVIL Terminal / 单页工作台
 
 项目所有前端内容合并到一个页面。顶部导航只定位同页分区，不再切换到多张页面。
 
@@ -54,3 +54,6 @@
 当前前端入口：index.html、原 styles.css、integration.css、unified.js、terminal-engine.mjs。
 build-frontend.mjs 生成无需服务器的独立文件。
 旧 desk、terminal、样式及代码验证后台文件作为兼容存档保留，不被新前端加载；旧 Node Core API 不是交易后台。
+
+
+项目显示名称：NOXVIL。Logo 使用用户提供的原 PNG 文件，图像内容未修改。

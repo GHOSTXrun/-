@@ -1,4 +1,4 @@
-# Nightjar Native Terminal
+# NOXVIL Native Terminal
 
 独立、原生可操作的终端原型。按参考视频制作界面，不依赖原 Cellumo 模板，不含 iframe、缩放嵌入或 parent 消息通信。
 
@@ -37,3 +37,6 @@
 
 构建产物：打开独立终端.html、dist/index.html。
 开发工具中的「独立终端验收.mjs」检查：没有 iframe、行情响应解析、手动买卖、自动策略、账本、LIMITED 标签、筛选、导出、断网否决和响应式布局。
+
+
+项目显示名称：NOXVIL。Logo 使用用户提供的原 PNG 文件，图像内容未修改。

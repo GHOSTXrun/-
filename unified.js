@@ -60,8 +60,8 @@ document.addEventListener('click',event=>{
  const action=event.target.closest('[data-action]')?.dataset.action;
  if(action==='toggle'){if(session.halted){$('#risk').scrollIntoView({behavior:'smooth'});return;}running=!running;lastTick=performance.now();if(running)tick();else{save();render();}}
  if(action==='clear-filter'){traceFilter=null;$('#agent-filter').value='all';render();}
- if(action==='json')download('nightjar-session.json',JSON.stringify({...session,mode:'PAPER / SYNTHETIC',exportedAt:new Date().toISOString()},null,2),'application/json');
- if(action==='csv'){const headers=['trace','at','symbol','size','pnl','balance','fees','slippage','mode','reason'],quote=value=>'"'+String(value??'').replaceAll('"','""')+'"';download('nightjar-trades.csv','\uFEFF'+[headers.join(','),...session.trades.map(t=>headers.map(k=>quote(t[k])).join(','))].join('\r\n'),'text/csv;charset=utf-8');}
+ if(action==='json')download('noxvil-session.json',JSON.stringify({...session,mode:'PAPER / SYNTHETIC',exportedAt:new Date().toISOString()},null,2),'application/json');
+ if(action==='csv'){const headers=['trace','at','symbol','size','pnl','balance','fees','slippage','mode','reason'],quote=value=>'"'+String(value??'').replaceAll('"','""')+'"';download('noxvil-trades.csv','\uFEFF'+[headers.join(','),...session.trades.map(t=>headers.map(k=>quote(t[k])).join(','))].join('\r\n'),'text/csv;charset=utf-8');}
 });
 $('#agent-filter').innerHTML='<option value="all">全部代理</option>'+roles.map(([name])=>'<option value="'+name+'">'+name+'</option>').join('');
 $('#agent-filter').addEventListener('change',()=>{traceFilter=null;render();});

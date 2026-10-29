@@ -44,8 +44,8 @@ document.addEventListener('click',event=>{
  if(action==='close-dialog'){event.target.closest('dialog').close();return;}
  if(action==='clear'){filter=null;render();return;}
  if(action==='refresh'){refresh();return;}
- if(action==='json'){download('nightjar-native-session.json',JSON.stringify({...state,exportedAt:new Date().toISOString(),source:'DEX Screener',execution:'PAPER',networkStatus:network,latestMarketFetchedAt:market.receivedAt},null,2),'application/json');return;}
- if(action==='csv'){download('nightjar-native-trades.csv',csv(),'text/csv;charset=utf-8');return;}
+ if(action==='json'){download('noxvil-native-session.json',JSON.stringify({...state,exportedAt:new Date().toISOString(),source:'DEX Screener',execution:'PAPER',networkStatus:network,latestMarketFetchedAt:market.receivedAt},null,2),'application/json');return;}
+ if(action==='csv'){download('noxvil-native-trades.csv',csv(),'text/csv;charset=utf-8');return;}
  if(action==='auto'){
   if(state.halted){toast('Session loss stop is active. Create a new paper session in risk settings.');return;}
   auto=!auto;log('Scribe',auto?'ARMED':'PAUSED',auto?'Paper rule strategy armed. Orders require real observations.':'Automatic paper orders paused; market observation continues.');

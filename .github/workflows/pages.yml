@@ -1,4 +1,4 @@
-name: Deploy Nightjar Terminal to GitHub Pages
+name: Deploy NOXVIL Terminal to GitHub Pages
 
 on:
   push:

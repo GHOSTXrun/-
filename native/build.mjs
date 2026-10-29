@@ -1,4 +1,4 @@
-import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
+import {readFileSync,writeFileSync,mkdirSync,copyFileSync} from 'node:fs';
 import {dirname,join,resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {Script} from 'node:vm';
@@ -13,8 +13,11 @@ export function build(){
  html=html.replace(/<link rel="stylesheet" href="\.\/(styles|native)\.css">/g,(_,name)=>'<style>'+read(name+'.css')+'</style>');
  html=html.replace('<script type="module" src="./app.mjs"></script>',()=>'<script>'+script.replace(/<\/script/gi,'<\\/script')+'</script>');
  if(/<iframe\b/i.test(html)||/parent\.postMessage/.test(html)||/<script[^>]*src=/.test(html))throw Error('Native build contains an embedded or external app');
- writeFileSync(join(root,'打开独立终端.html'),html);mkdirSync(join(root,'dist'),{recursive:true});writeFileSync(join(root,'dist/index.html'),html);
- console.log('Built independent native terminal (no iframe).');return {html,root};
+ const logoData='data:image/png;base64,'+readFileSync(join(root,'assets/noxvil-logo.png')).toString('base64');
+ const offlineHtml=html.replaceAll('./assets/noxvil-logo.png',logoData);
+ writeFileSync(join(root,'打开独立终端.html'),offlineHtml);mkdirSync(join(root,'dist'),{recursive:true});writeFileSync(join(root,'dist/index.html'),html);
+ mkdirSync(join(root,'dist/assets'),{recursive:true});copyFileSync(join(root,'assets/noxvil-logo.png'),join(root,'dist/assets/noxvil-logo.png'));
+ console.log('Built independent NOXVIL native terminal (no iframe).');return {html,root};
 }
 if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url))build();
 

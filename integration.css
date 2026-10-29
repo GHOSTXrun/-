@@ -52,6 +52,7 @@
 .template-detail .manual-content>p{margin:0 0 9px}.template-detail details{border-top:1px solid #14261b;padding-top:8px;margin-top:8px}.template-detail summary{cursor:pointer;color:#739981}.template-detail details p{margin:8px 0 0}
 .toast{position:fixed;bottom:20px;right:20px;z-index:120;background:#05120a;border:1px solid var(--acid);padding:12px 18px;color:#96c4a5;font:10px/1.7 var(--mono);max-width:90vw}
 [hidden]{display:none!important}
+.brand-logo{overflow:hidden;background:none!important}.brand-logo img{display:block;position:absolute;top:50%;left:50%;width:48px;height:48px;object-fit:contain;transform:translate(-50%,-50%) scale(1.7);mix-blend-mode:screen}
 .video-panel-stage{display:flex;flex-direction:column;overflow:hidden;min-height:0}
 .video-panel-toolbar{height:28px;flex:0 0 28px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;border-bottom:1px solid var(--line);color:#456b50;font:7px var(--mono)}
 .video-panel-toolbar button{font:8px var(--mono);border:1px solid #294d33;background:none;color:var(--acid);padding:3px 7px;cursor:pointer}

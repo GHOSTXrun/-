@@ -1,17 +1,17 @@
 {
-    "name":  "nightjar-terminal",
-    "version":  "0.2.0",
-    "private":  true,
-    "type":  "module",
-    "scripts":  {
-                    "start":  "node server.mjs",
-                    "worker":  "node worker.mjs",
-                    "check":  "node --check server.mjs \u0026\u0026 node --check worker.mjs \u0026\u0026 node --check fleet.mjs \u0026\u0026 node --check app.js \u0026\u0026 node --check runtime.js \u0026\u0026 node --check github-live.js \u0026\u0026 node --check product-pages.js \u0026\u0026 node --check terminal.js \u0026\u0026 node --check terminal-engine.mjs \u0026\u0026 node --check desk.js \u0026\u0026 node --check unified.js \u0026\u0026 node --check build-frontend.mjs \u0026\u0026 node --check video-panel.js",
-                    "test":  "node test.mjs \u0026\u0026 node terminal-engine.test.mjs",
-                    "fleet":  "node fleet.mjs",
-                    "build:frontend":  "node build-frontend.mjs"
-                },
-    "engines":  {
-                    "node":  "\u003e=20"
-                }
+  "name": "noxvil-terminal",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "worker": "node worker.mjs",
+    "check": "node --check server.mjs && node --check worker.mjs && node --check fleet.mjs && node --check app.js && node --check runtime.js && node --check github-live.js && node --check product-pages.js && node --check terminal.js && node --check terminal-engine.mjs && node --check desk.js && node --check unified.js && node --check build-frontend.mjs && node --check video-panel.js",
+    "test": "node test.mjs && node terminal-engine.test.mjs",
+    "fleet": "node fleet.mjs",
+    "build:frontend": "node build-frontend.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
 }
