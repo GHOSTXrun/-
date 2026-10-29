@@ -1,4 +1,5 @@
 import {createSession,settings,advance,fixture,validateCandidate,roles} from './terminal-engine.mjs';
+import {connectVideoPanel,updateVideoPanel} from './video-panel.js';
 const $=selector=>document.querySelector(selector),$$=selector=>[...document.querySelectorAll(selector)];
 const key='nightjar.paper.v1';
 let session=createSession(),running=false,traceFilter=null,speed=1,lastTick=performance.now(),storageOK=true;
@@ -46,6 +47,7 @@ function render(){
  $('[data-chart]').innerHTML=chart();$('[data-return]').textContent='变化 '+((session.balance/session.config.initial-1)*100).toFixed(2)+'%';
  $('[data-chart-note]').textContent=session.trades.length?'已核对 '+session.trades.length+' 笔平仓记录 · 最近最多 300 个结算点':'完成首笔交易后更新曲线';
  $('[data-trades]').innerHTML=session.trades.slice(0,100).map(trade=>'<tr><td>'+time(trade.at)+'<small>'+esc(trade.trace)+'</small></td><td translate="no">'+esc(trade.symbol)+'</td><td>'+money(trade.size)+'</td><td class="'+(trade.pnl<0?'negative':'positive')+'">'+money(trade.pnl)+'</td><td>'+money(trade.balance)+'</td><td><button data-trace="'+esc(trade.trace)+'">追踪 ↗</button></td></tr>').join('')||'<tr><td colspan="6">暂无已平仓交易；开仓和安全拒绝均不会提前计为收益。</td></tr>';
+ updateVideoPanel(session,running,speed);
 }
 function tick(){if(!running)return;try{session=advance(session);if(session.halted)running=false;save();render();}catch(error){running=false;render();toast('模拟已暂停：'+error.message);}}
 function download(name,body,type){const url=URL.createObjectURL(new Blob([body],{type}));const a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
@@ -75,6 +77,14 @@ function normalizeHash(){
 }
 addEventListener('hashchange',normalizeHash);normalizeHash();
 function clock(){$('#clock').textContent=new Date().toLocaleTimeString('en-GB',{hour12:false})+' LOCAL';}
+connectVideoPanel({
+toggle:()=>document.querySelector("[data-action=toggle]").click(),
+json:()=>document.querySelector("[data-action=json]").click(),
+agent:name=>{if(!roles.some(([n])=>n===name))return;document.querySelector("#agent-filter").value=name;document.querySelector("#agent-filter").dispatchEvent(new Event("change"));focusLogs();},
+trace:id=>{if(typeof id!=="string"||!session.logs.some(log=>log.trace===id))return;traceFilter=id;document.querySelector("#agent-filter").value="all";render();focusLogs();},
+speed:n=>{if(![1,2,4].includes(n))return;document.querySelector("#speed").value=String(n);document.querySelector("#speed").dispatchEvent(new Event("change"));updateVideoPanel(session,running,speed);},
+jump:id=>{if(["risk","manual","decisions"].includes(id))document.getElementById(id).scrollIntoView({behavior:"smooth"});}
+});
 render();clock();setInterval(clock,1000);setInterval(()=>{if(running&&performance.now()-lastTick>=3000/speed){lastTick=performance.now();tick();}},150);
 if(new URLSearchParams(location.search).get('autoplay')==='1'&&!session.halted){running=true;lastTick=performance.now();tick();}
 
