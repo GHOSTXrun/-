@@ -25,7 +25,7 @@ function render(){
  $$('[data-action="toggle"]').forEach(el=>{el.textContent=session.halted?'LOSS STOP · NEW SESSION':running?'PAUSE PAPER SESSION':'START PAPER SESSION';el.setAttribute('aria-pressed',String(running));});
  $('[data-last-trace]').textContent=session.logs[0]?.trace||'AWAITING PAPER SESSION';
  $('.awaiting strong').textContent=session.halted?'session loss stop reached':running?'six agents. one decision trace.':'ready for the night shift';
- $('.awaiting span').textContent=running?'synthetic replay running · no live orders':'synthetic market replay · execution adapter offline';
+ $('.awaiting span').textContent=running?'synthetic replay running · no live orders':'synthetic market replay · execution adapter';
  $('[data-feed]').innerHTML=session.logs.slice(0,5).map(l=>'<p><time>'+time(l.at)+'</time><b>'+esc(l.agent)+'</b><span>'+esc(l.decision)+'</span><em>'+esc(l.reason)+'</em></p>').join('')||'<p>Start a paper session to inspect agent decisions.</p>';
  const agent=$('#agentFilter').value;
  const logs=session.logs.filter(l=>(agent==='all'||l.agent===agent)&&(!filterTrace||l.trace===filterTrace));
