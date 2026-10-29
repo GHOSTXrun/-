@@ -1,4 +1,6 @@
 import {createSession,settings,step,roles} from './terminal-engine.mjs';
+import {mountDesk,renderDesk} from './desk.js';
+mountDesk();
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const key='nightjar.paper.v1';let running=false,session=createSession(),filterTrace=null,storageOK=true;
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -12,6 +14,7 @@ function route(){
  $$('[data-view]').forEach(v=>v.classList.toggle('is-active',v.dataset.view===next));
  $$('[data-route]').forEach(v=>{v.classList.toggle('active',v.dataset.route===next);if(v.dataset.route===next)v.setAttribute('aria-current','page');else v.removeAttribute('aria-current');});
  $('#landingDetail').hidden=next!=='live';document.body.dataset.route=next;
+ const nav=$('.topbar nav'),active=nav.querySelector('[aria-current="page"]');if(innerWidth<=680&&active)nav.scrollLeft=active.offsetLeft-nav.offsetLeft;
 }
 function render(){
  const wins=session.trades.filter(t=>t.pnl>0).length,losses=session.trades.filter(t=>t.pnl<0).length;
@@ -32,6 +35,7 @@ function render(){
  $('[data-trades]').innerHTML=session.trades.slice(0,200).map(t=>'<tr><td>'+esc(t.trace)+'<br><small>'+time(t.at)+'</small></td><td>'+esc(t.symbol)+'</td><td>'+money(t.size)+'</td><td class="'+(t.pnl<0?'nj-red':'nj-green')+'">'+money(t.pnl)+'</td><td>'+money(t.balance)+'</td><td><button data-trace="'+esc(t.trace)+'">inspect</button></td></tr>').join('')||'<tr><td colspan="6">No closed trades. Rejected candidates never create a ledger entry.</td></tr>';
  $('[data-agents]').innerHTML=roles.map(([name,role,description],i)=>{const log=session.logs.find(l=>l.agent===name);return '<article class="machine-tile nj-agent"><header>0'+i+' / '+name+' <span>'+(running?'PAPER ACTIVE':'STANDBY')+'</span></header><div class="nj-agent-body"><span class="mini-cell"><i></i><i></i><b></b></span><h2>'+name+'</h2><small>'+role+'</small><p>'+description+'</p><pre>'+esc(log?log.decision+' / '+log.trace+'\n'+log.reason:'Waiting for first paper decision.')+'</pre></div><footer>ROLE SIMULATOR / '+(log?time(log.at):'NO EVENTS')+'</footer></article>';}).join('');
  const notice=$('#sessionMessage');if(!storageOK)notice.textContent='Browser storage unavailable. Export for a durable copy.';
+ renderDesk(session,running);
 }
 function tick(){if(!running)return;try{session=step(session);if(session.halted)running=false;save();render();}catch(error){running=false;render();toast('Paper replay paused: '+error.message);}}
 function download(name,body,type){const url=URL.createObjectURL(new Blob([body],{type}));const a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
@@ -45,8 +49,8 @@ document.addEventListener('click',event=>{
 $('#agentFilter').addEventListener('change',render);
 $('#sessionForm').addEventListener('submit',e=>{e.preventDefault();try{const form=new FormData(e.currentTarget),config=Object.fromEntries(['initial','allocation','slippage','lossLimit'].map(k=>[k,Number(form.get(k))]));const next=createSession(config);running=false;session=next;filterTrace=null;save();render();$('#sessionMessage').textContent='New paper session ready. No real funds are connected.';toast('New paper session created.');location.hash='live';}catch(error){$('#sessionMessage').textContent=error.message;}});
 addEventListener('hashchange',route);
-document.addEventListener('keydown',e=>{if(e.ctrlKey||e.metaKey||e.altKey||/INPUT|SELECT|TEXTAREA|BUTTON/.test(e.target.tagName))return;const routes=['live','mutations','lineage','treasury','spawn','manual'];if(/^[0-5]$/.test(e.key))location.hash=routes[Number(e.key)];});
-function clock(){$('#clock').textContent=new Date().toLocaleTimeString('en-GB',{hour12:false})+' LOCAL';}
+document.addEventListener('keydown',e=>{if(e.ctrlKey||e.metaKey||e.altKey||/INPUT|SELECT|TEXTAREA|BUTTON/.test(e.target.tagName))return;const routes=['live','mutations','lineage','treasury','spawn','manual','desk'];if(/^[0-6]$/.test(e.key))location.hash=routes[Number(e.key)];});
+function clock(){const value=new Date().toLocaleTimeString('en-GB',{hour12:false});$('#clock').textContent=value+' LOCAL';const deskClock=$('[data-nd-clock]');if(deskClock)deskClock.textContent=value;}
 for(const [k,v] of Object.entries(session.config)){const input=$('#sessionForm [name="'+k+'"]');if(input)input.value=v;}
 route();render();clock();setInterval(clock,1000);setInterval(tick,3000);
 
