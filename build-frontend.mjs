@@ -30,7 +30,7 @@ if(!nativeBuilder)throw Error('Native terminal source is required for the defaul
 const native=await import(pathToFileURL(nativeBuilder).href);const result=native.build();
 mkdirSync(join(root,'dist/legacy'),{recursive:true});writeFileSync(join(root,'dist/legacy/index.html'),html);
 mkdirSync(join(root,'dist/native'),{recursive:true});writeFileSync(join(root,'dist/native/index.html'),result.html);
-writeFileSync(join(root,'dist/index.html'),result.html);
-writeFileSync(join(root,'index.html'),result.html);
-writeFileSync(join(root,'frontend.html'),result.html);
-console.log('Default homepage and /native/ now both show the independent native terminal.');
+writeFileSync(join(root,'dist/index.html'),html);
+writeFileSync(join(root,'index.html'),read('legacy-template.html'));
+writeFileSync(join(root,'frontend.html'),html);
+console.log('Original template remains the homepage; native terminal stays separate at /native/.');
