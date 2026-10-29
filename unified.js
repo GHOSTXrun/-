@@ -29,9 +29,9 @@ function render(){
  $('[data-open]').textContent=session.position?'持仓 '+session.position.symbol:'当前无持仓';
  $('[data-progress]').textContent='已检查 '+session.cursor+' 个候选';
  $('[data-saving]').textContent=storageOK?'自动保存':'未保存 / 请导出';
- const toggle=$('[data-action="toggle"]');toggle.textContent=session.halted?'已停机 · 设置新会话':running?'暂停模拟':'启动模拟';toggle.setAttribute('aria-pressed',String(running));
+ for(const toggle of $$('[data-action="toggle"]')){toggle.textContent=session.halted?'已停机 · 设置新会话':running?'暂停模拟':'启动模拟';toggle.setAttribute('aria-pressed',String(running));}
  const latest=session.logs[0];$('[data-trace-label]').textContent=latest?latest.trace+' / '+latest.agent:'等待第一条信号';
- $('[data-agents]').innerHTML=roles.map(([name],i)=>{const log=session.logs.find(l=>l.agent===name);return '<button class="agent '+(latest?.agent===name?'active':'')+'" data-agent="'+name+'"><span class="agent-index">0'+(i+1)+'</span><span><strong translate="no">'+name+'</strong><small>'+roleNames[name]+'</small><code title="'+esc(log?.reason||'')+'">'+esc(log?.reason||'等待首条模拟信号')+'</code></span><em>'+esc(log?decisionNames[log.decision]||log.decision:'待机')+'</em></button>';}).join('');
+ $('[data-agents]').innerHTML='<div><span>ID</span><span>AGENT</span><span>S</span><span>ROLE</span><span>MODE</span><span>CAP</span><span>STATE</span><span>RESPONSIBILITY</span></div>'+roles.map(([name],i)=>{const log=session.logs.find(l=>l.agent===name);return '<p role="button" tabindex="0" data-agent="'+name+'" class="'+(latest?.agent===name?'template-active':'')+'"><span>100'+i+'</span><b translate="no">'+name+'</b><span>'+(running?'R':'S')+'</span><span>'+['discovery','safety','risk','execution','audit','accounting'][i]+'</span><span>PAPER</span><span>'+['READ','VETO',session.config.allocation+'%',session.config.slippage+'%','LOG','NET'][i]+'</span><span>'+esc(log?decisionNames[log.decision]||log.decision:'待机')+'</span><em>'+roleNames[name]+'</em></p>';}).join('');
  $('[data-pipeline]').innerHTML=roles.map(([name],i)=>'<div class="stage '+(latest?.agent===name?'active':'')+'"><b>0'+(i+1)+'</b><span translate="no">'+name+'</span></div>').join('');
  $('[data-candidates]').innerHTML=Array.from({length:4},(_,i)=>{const q=fixture(session.cursor+i),reason=validateCandidate(q,session.config);const labels={'invalid price':'无效价格','stale quote':'报价过期','sell simulation failed':'卖出检查失败','token controls unverified':'控制权未验证','liquidity below $25,000':'流动性不足','slippage cap exceeded':'滑点超限'};return '<article class="candidate '+(reason?'reject':'')+'"><b translate="no">'+esc(q.symbol)+'</b><small>'+esc(reason?labels[reason]||reason:'待安全检查')+'</small></article>';}).join('');
  const position=session.position||session.trades[0],isOpen=!!session.position;
@@ -70,11 +70,13 @@ $('#session-form').addEventListener('submit',event=>{
 });
 for(const [key,value] of Object.entries(session.config)){const input=$('#session-form [name="'+key+'"]');if(input)input.value=value;}
 function normalizeHash(){
- const aliases={live:'overview',desk:'overview',mutations:'agents',lineage:'decisions',treasury:'ledger',spawn:'risk',top:'overview'};
- const hash=location.hash.slice(1);if(aliases[hash]){history.replaceState(null,'','#'+aliases[hash]);if(aliases[hash]!=='overview')$('#'+aliases[hash]).scrollIntoView();}
+ const aliases={live:'top',desk:'top',overview:'top',mutations:'agents',lineage:'decisions',treasury:'ledger',spawn:'risk'};
+ const hash=location.hash.slice(1);if(aliases[hash]){history.replaceState(null,'','#'+aliases[hash]);if(aliases[hash]!=='top')$('#'+aliases[hash]).scrollIntoView();}
 }
 addEventListener('hashchange',normalizeHash);normalizeHash();
 function clock(){$('#clock').textContent=new Date().toLocaleTimeString('en-GB',{hour12:false})+' LOCAL';}
 render();clock();setInterval(clock,1000);setInterval(()=>{if(running&&performance.now()-lastTick>=3000/speed){lastTick=performance.now();tick();}},150);
 if(new URLSearchParams(location.search).get('autoplay')==='1'&&!session.halted){running=true;lastTick=performance.now();tick();}
 
+
+document.addEventListener('keydown',event=>{if((event.key==='Enter'||event.key===' ')&&event.target.matches('[data-agent]')){event.preventDefault();event.target.click();}});

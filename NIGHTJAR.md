@@ -12,7 +12,7 @@
 - 会话与风控：初始资金、分配比例、滑点上限、亏损停机，新建前需确认。
 - 运行手册：同页展开工作流程、数据边界和实盘要求。
 
-保留黑绿终端风格，去除超大字标、空白展示区和重复页面。品牌为完整文本，避免逐字翻译导致标题乱码。
+保留原模板的页头、大字标、左右分栏、进程表和日志区。styles.css 未改动；integration.css 仅用于在原分栏内安放新内容。品牌标注 translate=no，避免逐字翻译。
 
 ## 运行方式
 
@@ -51,6 +51,6 @@
 
 ## 源码说明
 
-当前前端入口：index.html、unified.css、unified.js、terminal-engine.mjs。
+当前前端入口：index.html、原 styles.css、integration.css、unified.js、terminal-engine.mjs。
 build-frontend.mjs 生成无需服务器的独立文件。
 旧 desk、terminal、样式及代码验证后台文件作为兼容存档保留，不被新前端加载；旧 Node Core API 不是交易后台。
