@@ -16,7 +16,7 @@ try{
 let playbackRequested=true;
 try{const pref=JSON.parse(localStorage.getItem(playbackKey)||"null");if(pref){playbackRequested=pref.running!==false;if([1,2,4].includes(pref.speed))speed=pref.speed;}}catch{}
 function savePlayback(){try{localStorage.setItem(playbackKey,JSON.stringify({running,speed}));}catch{}}
-function save(){try{localStorage.setItem(key,JSON.stringify(session));storageOK=true;}catch{storageOK=false;toast('Browser storage is unavailable. Export the session to preserve records.');}}
+function save(){try{localStorage.setItem(key,JSON.stringify(session));storageOK=true;}catch{storageOK=false;}}
 function chart(){
  const trades=[...session.trades].reverse(),all=[session.config.initial,...trades.map(t=>t.balance)],values=all.slice(-300);
  let low=Math.min(...values),high=Math.max(...values);const pad=Math.max((high-low)*.15,.01);low-=pad;high+=pad;
