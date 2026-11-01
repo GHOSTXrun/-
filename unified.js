@@ -94,3 +94,13 @@ if((new URLSearchParams(location.search).get('autoplay')==='1'||(new URLSearchPa
 
 
 document.addEventListener('keydown',event=>{if((event.key==='Enter'||event.key===' ')&&event.target.matches('[data-agent]')){event.preventDefault();event.target.click();}});
+
+const caButton=document.querySelector('[data-ca]');
+caButton?.addEventListener('click',async()=>{
+ const address=caButton.dataset.ca;
+ try{
+  if(navigator.clipboard?.writeText)await navigator.clipboard.writeText(address);
+  else{const field=document.createElement('textarea');field.value=address;field.style.cssText='position:fixed;opacity:0';document.body.append(field);field.select();const copied=document.execCommand('copy');field.remove();if(!copied)throw Error('copy');}
+  toast('Contract address copied.');
+ }catch{toast('Select and copy the contract address.');}
+});
