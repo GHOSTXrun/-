@@ -3,7 +3,7 @@ import {connectVideoPanel,updateVideoPanel} from './video-panel.js';
 const $=selector=>document.querySelector(selector),$$=selector=>[...document.querySelectorAll(selector)];
 const key='nightjar.paper.v1',playbackKey='noxvil.playback.v1';
 let session=createSession(),running=false,traceFilter=null,speed=4,lastTick=performance.now(),storageOK=true;
-const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const esc=value=>String(value??'').replace(/sell simulation failed/gi,'Sell check failed').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const money=n=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(n);
 const time=at=>new Date(at).toLocaleTimeString('en-GB',{hour12:false});
 const decisionNames={CANDIDATE:'DISCOVER',PASS:'PASS',REJECT:'REJECT',SIZED:'SIZED',OPEN:'OPEN',CLOSED:'CLOSED',RECORDED:'RECORDED',SETTLED:'SETTLED',HALTED:'HALTED'};

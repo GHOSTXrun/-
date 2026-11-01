@@ -9,7 +9,7 @@ Ledger:'<path d="M4 3h16v18H4zM8 8h8M8 12h8M8 16h5"/>',
 You:'<path d="M19 15A8 8 0 0 1 9 5a8 8 0 1 0 10 10z"/>'
 };
 const icon=n=>'<svg viewBox="0 0 24 24" aria-hidden="true">'+icons[n]+'</svg>';
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const esc=s=>String(s??'').replace(/sell simulation failed/gi,'Sell check failed').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const money=n=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(n);
 const when=s=>new Date(s).toLocaleTimeString('en-GB',{hour12:false});
 const owl="<img src=\"./assets/noxvil-logo.png\" alt=\"NOXVIL\" draggable=\"false\">";
